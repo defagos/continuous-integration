@@ -1,0 +1,8 @@
+.DS_Store
+build/
+list-targets.xcodeproj/xcuserdata/
+list-targets.xcodeproj/project.xcworkspace/xcuserdata/
+list-targets.xcodeproj/*.pbxuser
+list-targets.xcodeproj/*.mode1v3
+list-targets.xcodeproj/*.perspectivev3
+

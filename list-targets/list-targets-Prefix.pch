@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'list-targets' target in the 'list-targets' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif

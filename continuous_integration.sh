@@ -3,9 +3,9 @@
 # TODO: Document this script (most notably that it is meant to be used with Jenkins)
 
 echo ""
-echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
+echo "**************************************************************************************************************************************************"
 echo "Continuous integration for $JOB_NAME, build $BUILD_NUMBER ($BUILD_ID)"
-echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
+echo "**************************************************************************************************************************************************"
 echo ""
 
 # Create a symbolic link from the workspace (which we can access using a URL) and the builds directory. This is where we will store our build logs
@@ -49,13 +49,15 @@ do
         
         # Build the simulator binaries (performs a static analysis. Not signed)
         echo "Building simulator binaries for configuration $configuration_name with SDK $configuration_simulator_sdk..."
-        echo "-------------------------------------------------------------------------------------------------------------------------------"
+        echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
         echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_simulator_sdk}.log"
+        log_file_path="$build_dir/build_${configuration_name}_${configuration_simulator_sdk}.log"
         xcodebuild clean build -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" RUN_CLANG_STATIC_ANALYZER="true" \
-            &> "$build_dir/build_${configuration_name}_${configuration_simulator_sdk}.log"
+            &> "$log_file_path"
         if [ $? -ne "0" ]; then
-            echo "[STATUS] Build failed"
+            echo "[STATUS] Build failed (log excerpt follows)"
             echo ""
+            tail -n 20 "$log_file_path"
             exit 1  
         fi
         echo "[STATUS] Build succeeded"
@@ -63,13 +65,15 @@ do
         
         # Build the device binaries (signed)
         echo "Building device binaries for configuration $configuration_name with SDK $configuration_sdk..."
-        echo "-------------------------------------------------------------------------------------------------------------------------------"
+        echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
         echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_sdk}.log"
+        log_file_path="$build_dir/build_${configuration_name}_${configuration_sdk}.log"
         xcodebuild clean build -configuration "$configuration_name" -sdk "$configuration_sdk" CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
-            PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$build_dir/build_${configuration_name}_${configuration_sdk}.log"
+            PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$log_file_path"
         if [ $? -ne "0" ]; then
-            echo "[STATUS] Build failed"
+            echo "[STATUS] Build failed (log excerpt follows)"
             echo ""
+            tail -n 20 "$log_file_path"
             exit 1  
         fi
         echo "[STATUS] Build succeeded"

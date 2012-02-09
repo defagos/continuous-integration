@@ -10,9 +10,9 @@
 
 int main (int argc, const char *argv[])
 {
-    @autoreleasepool {        
-        return DDCliAppRunWithClass([XcodeProjInfoApplication class]);
-    }
-    return 0;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    int exitCode = DDCliAppRunWithClass([XcodeProjInfoApplication class]);
+    [pool drain];
+    return exitCode;
 }
 

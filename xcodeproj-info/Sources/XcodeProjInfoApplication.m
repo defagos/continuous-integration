@@ -228,12 +228,13 @@ static NSString * const kApplicationVersion = @"1.0";
     
     // Target specified: Display only corresponding configurations
     if (targetName) {
-        PBXTarget *target = [[targets filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", targetName]] objectAtIndex:0];
-        if (! target) {
+        NSArray *filteredTargets = [targets filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", targetName]];
+        if ([filteredTargets count] == 0) {
             ddprintf(@"[ERROR] Target %@ not found\n", targetName);
             return EX_SOFTWARE;
         }
         
+        PBXTarget *target = [filteredTargets objectAtIndex:0];        
         NSArray *configurations = [XCConfiguration configurationsForTarget:target inProjFile:projFile];
         for (XCConfiguration *configuration in configurations) {
             ddprintf(@"%@ %@\n", configuration.name, configuration.sdk);

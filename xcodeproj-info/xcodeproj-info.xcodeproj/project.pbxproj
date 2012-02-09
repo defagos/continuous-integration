@@ -13,6 +13,8 @@
 		6FA7824414E3268C0055EC5E /* PBXProjFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7823D14E3268C0055EC5E /* PBXProjFile.m */; };
 		6FA7824514E3268C0055EC5E /* PBXTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7823F14E3268C0055EC5E /* PBXTarget.m */; };
 		6FA7824614E3268C0055EC5E /* XCConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7824114E3268C0055EC5E /* XCConfiguration.m */; };
+		6FA7825B14E398100055EC5E /* libddcli.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FA7825A14E398100055EC5E /* libddcli.a */; };
+		6FA7825F14E398870055EC5E /* XcodeProjInfoApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7825E14E398870055EC5E /* XcodeProjInfoApplication.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +42,14 @@
 		6FA7823F14E3268C0055EC5E /* PBXTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBXTarget.m; sourceTree = "<group>"; };
 		6FA7824014E3268C0055EC5E /* XCConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCConfiguration.h; sourceTree = "<group>"; };
 		6FA7824114E3268C0055EC5E /* XCConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCConfiguration.m; sourceTree = "<group>"; };
+		6FA7825414E398100055EC5E /* DDCliApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliApplication.h; sourceTree = "<group>"; };
+		6FA7825514E398100055EC5E /* DDCliParseException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliParseException.h; sourceTree = "<group>"; };
+		6FA7825614E398100055EC5E /* DDCliUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliUtil.h; sourceTree = "<group>"; };
+		6FA7825714E398100055EC5E /* DDCommandLineInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCommandLineInterface.h; sourceTree = "<group>"; };
+		6FA7825814E398100055EC5E /* DDGetoptLongParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDGetoptLongParser.h; sourceTree = "<group>"; };
+		6FA7825A14E398100055EC5E /* libddcli.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libddcli.a; sourceTree = "<group>"; };
+		6FA7825D14E398870055EC5E /* XcodeProjInfoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XcodeProjInfoApplication.h; sourceTree = "<group>"; };
+		6FA7825E14E398870055EC5E /* XcodeProjInfoApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XcodeProjInfoApplication.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F30F81E14E305A300A29F80 /* Foundation.framework in Frameworks */,
+				6FA7825B14E398100055EC5E /* libddcli.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +68,7 @@
 		6F30F80E14E305A300A29F80 = {
 			isa = PBXGroup;
 			children = (
+				6FA7825114E398100055EC5E /* Externals */,
 				6FA7824814E326990055EC5E /* Other sources */,
 				6FA7823914E3268C0055EC5E /* Sources */,
 				6F30F81C14E305A300A29F80 /* Frameworks */,
@@ -91,6 +103,8 @@
 				6FA7823F14E3268C0055EC5E /* PBXTarget.m */,
 				6FA7824014E3268C0055EC5E /* XCConfiguration.h */,
 				6FA7824114E3268C0055EC5E /* XCConfiguration.m */,
+				6FA7825D14E398870055EC5E /* XcodeProjInfoApplication.h */,
+				6FA7825E14E398870055EC5E /* XcodeProjInfoApplication.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -102,6 +116,43 @@
 				6FA7823814E3268C0055EC5E /* main.m */,
 			);
 			name = "Other sources";
+			sourceTree = "<group>";
+		};
+		6FA7825114E398100055EC5E /* Externals */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825214E398100055EC5E /* ddcli */,
+			);
+			path = Externals;
+			sourceTree = "<group>";
+		};
+		6FA7825214E398100055EC5E /* ddcli */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825314E398100055EC5E /* include */,
+				6FA7825914E398100055EC5E /* lib */,
+			);
+			path = ddcli;
+			sourceTree = "<group>";
+		};
+		6FA7825314E398100055EC5E /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825414E398100055EC5E /* DDCliApplication.h */,
+				6FA7825514E398100055EC5E /* DDCliParseException.h */,
+				6FA7825614E398100055EC5E /* DDCliUtil.h */,
+				6FA7825714E398100055EC5E /* DDCommandLineInterface.h */,
+				6FA7825814E398100055EC5E /* DDGetoptLongParser.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		6FA7825914E398100055EC5E /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825A14E398100055EC5E /* libddcli.a */,
+			);
+			path = lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,6 +211,7 @@
 				6FA7824414E3268C0055EC5E /* PBXProjFile.m in Sources */,
 				6FA7824514E3268C0055EC5E /* PBXTarget.m in Sources */,
 				6FA7824614E3268C0055EC5E /* XCConfiguration.m in Sources */,
+				6FA7825F14E398870055EC5E /* XcodeProjInfoApplication.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +268,10 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "xcodeproj-info-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Externals/ddcli/lib\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -225,6 +281,10 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "xcodeproj-info-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Externals/ddcli/lib\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

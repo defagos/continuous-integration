@@ -16,9 +16,9 @@
  */
 @interface PBXTarget : NSObject {
 @private
-    NSString *m_hash;
+    NSString *m_uuid;
     NSString *m_name;
-    NSString *m_configurationListHash;
+    NSString *m_configurationListUUID;
 }
 
 /**
@@ -29,8 +29,8 @@
 /**
  * Target data
  */
-@property (nonatomic, readonly, retain) NSString *hash;
+@property (nonatomic, readonly, retain) NSString *uuid;
 @property (nonatomic, readonly, retain) NSString *name;
-@property (nonatomic, readonly, retain) NSString *configurationListHash;
+@property (nonatomic, readonly, retain) NSString *configurationListUUID;
 
 @end

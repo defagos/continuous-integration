@@ -10,9 +10,9 @@
 
 @interface PBXProject ()
 
-@property (nonatomic, retain) NSString *hash;
-@property (nonatomic, retain) NSArray *targetHashes;
-@property (nonatomic, retain) NSString *configurationListHash;
+@property (nonatomic, retain) NSString *uuid;
+@property (nonatomic, retain) NSArray *targetUUIDs;
+@property (nonatomic, retain) NSString *configurationListUUID;
 
 @end
 
@@ -23,18 +23,18 @@
 + (NSArray *)projectsInProjFile:(PBXProjFile *)projFile
 {
     NSMutableArray *projects = [NSMutableArray array];
-    for (NSString *hash in [projFile.objectsDict allKeys]) {
+    for (NSString *uuid in [projFile.objectsDict allKeys]) {
         // Only consider projects
-        NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:hash];
+        NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:uuid];
         if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"PBXProject"]) {
             continue;
         }
         
         // Extract project data
         PBXProject *project = [[[PBXProject alloc] init] autorelease];
-        project.hash = hash;
-        project.targetHashes = [propertiesDict objectForKey:@"targets"];
-        project.configurationListHash = [propertiesDict objectForKey:@"buildConfigurationList"];
+        project.uuid = uuid;
+        project.targetUUIDs = [propertiesDict objectForKey:@"targets"];
+        project.configurationListUUID = [propertiesDict objectForKey:@"buildConfigurationList"];
         [projects addObject:project];
     }
     return [NSArray arrayWithArray:projects];
@@ -44,31 +44,31 @@
 
 - (void)dealloc
 {
-    self.hash = nil;
-    self.targetHashes = nil;
-    self.configurationListHash = nil;
+    self.uuid = nil;
+    self.targetUUIDs = nil;
+    self.configurationListUUID = nil;
 
     [super dealloc];
 }
 
 #pragma mark Accessors and mutators
 
-@synthesize hash = m_hash;
+@synthesize uuid = m_uuid;
 
-@synthesize targetHashes = m_targetHashes;
+@synthesize targetUUIDs = m_targetUUIDs;
 
-@synthesize configurationListHash = m_configurationListHash;
+@synthesize configurationListUUID = m_configurationListUUID;
 
 #pragma mark Description
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p; hash: %@; targetHashes: %@; configurationListHash: %@>", 
+    return [NSString stringWithFormat:@"<%@: %p; uuid: %@; targetUUIDs: %@; configurationListUUID: %@>", 
             [self class],
             self,
-            self.hash,
-            self.targetHashes,
-            self.configurationListHash];
+            self.uuid,
+            self.targetUUIDs,
+            self.configurationListUUID];
 }
 
 @end

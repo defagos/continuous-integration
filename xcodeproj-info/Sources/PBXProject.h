@@ -15,9 +15,9 @@
  */
 @interface PBXProject : NSObject {
 @private
-    NSString *m_hash;
-    NSArray *m_targetHashes;
-    NSString *m_configurationListHash;
+    NSString *m_uuid;
+    NSArray *m_targetUUIDs;
+    NSString *m_configurationListUUID;
 }
 
 /**
@@ -28,8 +28,8 @@
 /**
  * Project data
  */
-@property (nonatomic, readonly, retain) NSString *hash;
-@property (nonatomic, readonly, retain) NSArray *targetHashes;
-@property (nonatomic, readonly, retain) NSString *configurationListHash;
+@property (nonatomic, readonly, retain) NSString *uuid;
+@property (nonatomic, readonly, retain) NSArray *targetUUIDs;
+@property (nonatomic, readonly, retain) NSString *configurationListUUID;
 
 @end

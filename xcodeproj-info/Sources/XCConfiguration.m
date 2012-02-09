@@ -19,12 +19,12 @@
 + (NSArray *)configurationsForTarget:(PBXTarget *)target inProjFile:(PBXProjFile *)projFile;
 
 /**
- * Parse a .pbxproj file and returns the array of configurations for a given configuration hash
+ * Parse a .pbxproj file and returns the array of configurations for a given configuration uuid
  * code list, array of XCConfiguration objects
  */ 
-+ (NSArray *)configurationsFromConfigurationListHash:(NSString *)configurationListHash inProjFile:(PBXProjFile *)projFile;
++ (NSArray *)configurationsFromConfigurationListUUID:(NSString *)configurationListUUID inProjFile:(PBXProjFile *)projFile;
 
-@property (nonatomic, retain) NSString *hash;
+@property (nonatomic, retain) NSString *uuid;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *sdk;
 
@@ -36,33 +36,33 @@
 
 + (NSArray *)configurationsForProject:(PBXProject *)project inProjFile:(PBXProjFile *)projFile
 {
-    return [self configurationsFromConfigurationListHash:project.configurationListHash inProjFile:projFile];
+    return [self configurationsFromConfigurationListUUID:project.configurationListUUID inProjFile:projFile];
 }
 
 + (NSArray *)configurationsForTarget:(PBXTarget *)target inProjFile:(PBXProjFile *)projFile
 {
-    return [self configurationsFromConfigurationListHash:target.configurationListHash inProjFile:projFile];
+    return [self configurationsFromConfigurationListUUID:target.configurationListUUID inProjFile:projFile];
 }
 
-+ (NSArray *)configurationsFromConfigurationListHash:(NSString *)configurationListHash inProjFile:(PBXProjFile *)projFile
++ (NSArray *)configurationsFromConfigurationListUUID:(NSString *)configurationListUUID inProjFile:(PBXProjFile *)projFile
 {
-    NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationListHash];
+    NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationListUUID];
     if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"XCConfigurationList"]) {
-        ddprintf(@"[WARN] The hash %@ does not correspond to a configuration list; skipped\n", configurationListHash);
+        ddprintf(@"[WARN] The uuid %@ does not correspond to a configuration list; skipped\n", configurationListUUID);
         return nil;
     }
-    NSArray *configurationHashes = [propertiesDict objectForKey:@"buildConfigurations"];
+    NSArray *configurationUUIDs = [propertiesDict objectForKey:@"buildConfigurations"];
     
     NSMutableArray *configurations = [NSMutableArray array];
-    for (NSString *configurationHash in configurationHashes) {
-        NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationHash];
+    for (NSString *configurationUUID in configurationUUIDs) {
+        NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationUUID];
         if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"XCBuildConfiguration"]) {
-            ddprintf(@"[WARN] The hash %@ does not correspond to a configuration; skipped\n", configurationHash);
+            ddprintf(@"[WARN] The uuid %@ does not correspond to a configuration; skipped\n", configurationUUID);
             continue;
         }
         
         XCConfiguration *configuration = [[[XCConfiguration alloc] init] autorelease];
-        configuration.hash = configurationHash;
+        configuration.uuid = configurationUUID;
         configuration.name = [propertiesDict objectForKey:@"name"];
         configuration.sdk = [[propertiesDict objectForKey:@"buildSettings"] objectForKey:@"SDKROOT"];
         [configurations addObject:configuration];
@@ -75,7 +75,7 @@
 
 - (void)dealloc
 {
-    self.hash = nil;
+    self.uuid = nil;
     self.name = nil;
     self.sdk = nil;
 
@@ -84,7 +84,7 @@
 
 #pragma mark Accessors and mutators
 
-@synthesize hash = m_hash;
+@synthesize uuid = m_uuid;
 
 @synthesize name = m_name;
 
@@ -94,10 +94,10 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p; hash: %@; name: %@; sdk: %@>", 
+    return [NSString stringWithFormat:@"<%@: %p; uuid: %@; name: %@; sdk: %@>", 
             [self class],
             self,
-            self.hash,
+            self.uuid,
             self.name,
             self.sdk];
 }

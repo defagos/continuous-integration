@@ -17,7 +17,7 @@
  */
 @interface XCConfiguration : NSObject {
 @private
-    NSString *m_hash;
+    NSString *m_uuid;
     NSString *m_name;
     NSString *m_sdk;
 }
@@ -32,7 +32,7 @@
 /**
  * Configuration data
  */
-@property (nonatomic, readonly, retain) NSString *hash;
+@property (nonatomic, readonly, retain) NSString *uuid;
 @property (nonatomic, readonly, retain) NSString *name;
 @property (nonatomic, readonly, retain) NSString *sdk;
 

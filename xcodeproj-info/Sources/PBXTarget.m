@@ -12,9 +12,9 @@
 
 @interface PBXTarget ()
 
-@property (nonatomic, retain) NSString *hash;
+@property (nonatomic, retain) NSString *uuid;
 @property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *configurationListHash;
+@property (nonatomic, retain) NSString *configurationListUUID;
 
 @end
 
@@ -25,19 +25,19 @@
 + (NSArray *)targetsForProject:(PBXProject *)project inProjFile:(PBXProjFile *)projFile
 {
     NSMutableArray *targets = [NSMutableArray array];
-    for (NSString *targetHash in project.targetHashes) {
-        // Check that the hash corresponds to a target
-        NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:targetHash];
+    for (NSString *targetUUID in project.targetUUIDs) {
+        // Check that the uuid corresponds to a target
+        NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:targetUUID];
         if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"PBXNativeTarget"]) {
-            ddprintf(@"[WARN] The hash %@ does not correspond to a target; skipped\n", targetHash);
+            ddprintf(@"[WARN] The uuid %@ does not correspond to a target; skipped\n", targetUUID);
             continue;
         }
         
         // Extract target data
         PBXTarget *target = [[[PBXTarget alloc] init] autorelease];
-        target.hash = targetHash;
+        target.uuid = targetUUID;
         target.name = [propertiesDict objectForKey:@"name"];
-        target.configurationListHash = [propertiesDict objectForKey:@"buildConfigurationList"];
+        target.configurationListUUID = [propertiesDict objectForKey:@"buildConfigurationList"];
         [targets addObject:target];    
     }
     return [NSArray arrayWithArray:targets];
@@ -47,31 +47,31 @@
 
 - (void)dealloc
 {
-    self.hash = nil;
+    self.uuid = nil;
     self.name = nil;
-    self.configurationListHash = nil;
+    self.configurationListUUID = nil;
     
     [super dealloc];
 }
 
 #pragma mark Accessors and mutators
 
-@synthesize hash = m_hash;
+@synthesize uuid = m_uuid;
 
 @synthesize name = m_name;
 
-@synthesize configurationListHash = m_configurationListHash;
+@synthesize configurationListUUID = m_configurationListUUID;
 
 #pragma mark Description
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p; hash: %@; name: %@; configurationListHash: %@>", 
+    return [NSString stringWithFormat:@"<%@: %p; uuid: %@; name: %@; configurationListUUID: %@>", 
             [self class],
             self,
-            self.hash,
+            self.uuid,
             self.name,
-            self.configurationListHash];
+            self.configurationListUUID];
 }
 
 @end

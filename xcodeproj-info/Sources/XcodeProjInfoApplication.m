@@ -8,6 +8,11 @@
 
 #import "XcodeProjInfoApplication.h"
 
+#import "PBXProject.h"
+#import "PBXProjFile.h"
+#import "PBXTarget.h"
+#import "XCConfiguration.h"
+
 static NSString * const kApplicationVersion = @"1.0";
 
 @interface XcodeProjInfoApplication ()
@@ -59,7 +64,7 @@ static NSString * const kApplicationVersion = @"1.0";
 
 - (void)displayVersionForApplication:(DDCliApplication *)application
 {
-    ddprintf(@"%@ version %@", [application name], kApplicationVersion);
+    ddprintf(@"%@ version %@\n", [application name], kApplicationVersion);
 }
 
 - (void)application:(DDCliApplication *)application willParseOptions:(DDGetoptLongParser *)optionsParser
@@ -76,19 +81,70 @@ static NSString * const kApplicationVersion = @"1.0";
 
 - (int)application:(DDCliApplication *)application runWithArguments:(NSArray *)arguments
 {
+    // Version option
     if (self.version) {
         [self displayVersionForApplication:application];
         return EX_OK;
     }
     
+    // Help option
     if (self.help) {
         [self displayHelpForApplication:application];
         return EX_USAGE;
     }
     
+    // Project option
+    NSString *currentDirectoryPath = [[NSFileManager defaultManager] currentDirectoryPath];
+    NSString *xcodeProjFilePath = nil;
+    if (self.project) {
+        xcodeProjFilePath = [[currentDirectoryPath stringByAppendingPathComponent:self.project] stringByAppendingPathExtension:@"xcodeproj"];
+        if (! [[NSFileManager defaultManager] fileExistsAtPath:xcodeProjFilePath]) {
+            ddprintf(@"[ERROR] No project %@.xcodeproj has been found in the current directory\n", self.project);
+            return EX_SOFTWARE;
+        }
+    }
+    // No project option: Look for a project in the current directory
+    else {
+        NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:currentDirectoryPath error:NULL];
+        NSString *xcodeProjFileName = nil;
+        for (NSString *fileName in fileNames) {
+            if ([[fileName pathExtension] isEqualToString:@"xcodeproj"]) {
+                // If several projects found, exit
+                if (xcodeProjFileName) {
+                    ddprintf(@"[ERROR] Several .xcodeproj found in the current directory. Use -p for disambiguation\n");
+                    return EX_SOFTWARE;
+                }
+                
+                xcodeProjFileName = fileName;
+            }
+        }
+        
+        if (! xcodeProjFileName) {
+            ddprintf(@"[ERROR] No .xcodeproj found in the current directory\n");
+            return EX_SOFTWARE;
+        }
+        
+        xcodeProjFilePath = [currentDirectoryPath stringByAppendingPathComponent:xcodeProjFileName];
+    }
+        
+    // Load .pbxproj
+    NSString *projectFilePath = [xcodeProjFilePath stringByAppendingPathComponent:@"project.pbxproj"];
+    PBXProjFile *projFile = [[[PBXProjFile alloc] initWithFilePath:projectFilePath] autorelease];
+    if (! projFile) {
+        return EX_SOFTWARE;
+    }
     
-    [self displayHelpForApplication:application];
-    return EX_USAGE;
+    // Extract configuration information
+    NSArray *projects = [PBXProject projectsInProjFile:projFile];
+    for (PBXProject *project in projects) {
+        NSArray *projectConfigurations = [XCConfiguration configurationsForProject:project inProjFile:projFile];
+        NSLog(@"%@", projectConfigurations);
+    }
+    
+    
+    // TODO: Override with target configuration if available, otherwise use project configuration
+    
+    return EX_OK;
 }
 
 @end

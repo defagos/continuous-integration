@@ -24,14 +24,18 @@
 {
     NSMutableArray *projects = [NSMutableArray array];
     for (NSString *hash in [projFile.objectsDict allKeys]) {
+        // Only consider projects
         NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:hash];
-        if ([[propertiesDict objectForKey:@"isa"] isEqualToString:@"PBXProject"]) {
-            PBXProject *project = [[[PBXProject alloc] init] autorelease];
-            project.hash = hash;
-            project.targetHashes = [propertiesDict objectForKey:@"targets"];
-            project.configurationListHash = [propertiesDict objectForKey:@"buildConfigurationList"];
-            [projects addObject:project];
+        if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"PBXProject"]) {
+            continue;
         }
+        
+        // Extract project data
+        PBXProject *project = [[[PBXProject alloc] init] autorelease];
+        project.hash = hash;
+        project.targetHashes = [propertiesDict objectForKey:@"targets"];
+        project.configurationListHash = [propertiesDict objectForKey:@"buildConfigurationList"];
+        [projects addObject:project];
     }
     return [NSArray arrayWithArray:projects];
 }

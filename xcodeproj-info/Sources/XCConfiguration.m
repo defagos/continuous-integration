@@ -8,8 +8,20 @@
 
 #import "XCConfiguration.h"
 
+#import "DDCliUtil.h"
+
 @interface XCConfiguration ()
 
+/**
+ * Parse a .pbxproj file and returns the array of configurations for a given target, as an
+ * array of XCConfiguration objects
+ */ 
++ (NSArray *)configurationsForTarget:(PBXTarget *)target inProjFile:(PBXProjFile *)projFile;
+
+/**
+ * Parse a .pbxproj file and returns the array of configurations for a given configuration hash
+ * code list, array of XCConfiguration objects
+ */ 
 + (NSArray *)configurationsFromConfigurationListHash:(NSString *)configurationListHash inProjFile:(PBXProjFile *)projFile;
 
 @property (nonatomic, retain) NSString *hash;
@@ -36,7 +48,7 @@
 {
     NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationListHash];
     if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"XCConfigurationList"]) {
-        NSLog(@"The hash %@ does not correspond to a configuration list; skipped", configurationListHash);
+        ddprintf(@"[WARN] The hash %@ does not correspond to a configuration list; skipped\n", configurationListHash);
         return nil;
     }
     NSArray *configurationHashes = [propertiesDict objectForKey:@"buildConfigurations"];
@@ -45,7 +57,7 @@
     for (NSString *configurationHash in configurationHashes) {
         NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationHash];
         if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"XCBuildConfiguration"]) {
-            NSLog(@"The hash %@ does not correspond to a configuration; skipped", configurationHash);
+            ddprintf(@"[WARN] The hash %@ does not correspond to a configuration; skipped\n", configurationHash);
             continue;
         }
         

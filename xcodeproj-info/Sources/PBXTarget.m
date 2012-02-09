@@ -8,6 +8,8 @@
 
 #import "PBXTarget.h"
 
+#import "DDCliUtil.h"
+
 @interface PBXTarget ()
 
 @property (nonatomic, retain) NSString *hash;
@@ -24,12 +26,14 @@
 {
     NSMutableArray *targets = [NSMutableArray array];
     for (NSString *targetHash in project.targetHashes) {
+        // Check that the hash corresponds to a target
         NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:targetHash];
         if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"PBXNativeTarget"]) {
-            NSLog(@"The hash %@ does not correspond to a target; skipped", targetHash);
+            ddprintf(@"[WARN] The hash %@ does not correspond to a target; skipped\n", targetHash);
             continue;
         }
         
+        // Extract target data
         PBXTarget *target = [[[PBXTarget alloc] init] autorelease];
         target.hash = targetHash;
         target.name = [propertiesDict objectForKey:@"name"];

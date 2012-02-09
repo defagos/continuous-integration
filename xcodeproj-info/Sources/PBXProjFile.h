@@ -6,13 +6,24 @@
 //  Copyright (c) 2012 Hortis. All rights reserved.
 //
 
+/**
+ * Class for loading a .pbxproj file
+ *
+ * Designated initializer: init
+ */
 @interface PBXProjFile : NSObject {
 @private
     NSDictionary *m_objectsDict;
 }
 
-- (id)initWithFileName:(NSString *)fileName;
+/**
+ * Parse and load a .pbxproj file
+ */
+- (id)initWithFilePath:(NSString *)filePath;
 
+/**
+ * Dictionary of the objects contained within the .pbxproj file
+ */
 @property (nonatomic, readonly, retain) NSDictionary *objectsDict;
 
 @end

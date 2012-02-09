@@ -8,6 +8,8 @@
 
 #import "PBXProjFile.h"
 
+#import "DDCliUtil.h"
+
 @interface PBXProjFile ()
 
 @property (nonatomic, retain) NSDictionary *objectsDict;
@@ -16,10 +18,16 @@
 
 @implementation PBXProjFile
 
-- (id)initWithFileName:(NSString *)fileName
+- (id)initWithFilePath:(NSString *)filePath
 {
     if ((self = [super init])) {
-        self.objectsDict = [[NSDictionary dictionaryWithContentsOfFile:fileName] objectForKey:@"objects"];
+        if (! [[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+            ddprintf(@"[ERROR] The project file %@ does not exist", filePath);
+            [self release];
+            return nil;
+        }
+        
+        self.objectsDict = [[NSDictionary dictionaryWithContentsOfFile:filePath] objectForKey:@"objects"];
     }
     return self;
 }

@@ -1,6 +1,6 @@
 //
 //  PBXProjFile.m
-//  list-targets
+//  xcodeproj-info
 //
 //  Created by Samuel Défago on 08.02.12.
 //  Copyright (c) 2012 Hortis. All rights reserved.

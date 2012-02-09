@@ -1,6 +1,6 @@
 //
 //  main.m
-//  list-targets
+//  xcodeproj-info
 //
 //  Created by Samuel Défago on 08.02.12.
 //  Copyright (c) 2012 Hortis. All rights reserved.
@@ -13,6 +13,9 @@
 
 int main (int argc, const char * argv[])
 {
+    // TODO: Get projects & targets. If a target overrides the project settings, use them. Return the list
+    //       of configuration name with SDK
+    
     @autoreleasepool {
         PBXProjFile *projFile = [[[PBXProjFile alloc] initWithFileName:@"project.pbxproj"] autorelease];
         NSArray *projects = [PBXProject projectsInProjFile:projFile];

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: Extract SDKROOT from .pbxproj. Use it with xcodebuild (currently, the latest SDK is used)
-# TODO: Extract .xcodeproj files. Use it to build all projects and to create separate build logs for each of them
 # TODO: Document this script (most notably that it is meant to be used with Jenkins)
 
 echo ""

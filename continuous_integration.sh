@@ -8,29 +8,6 @@ echo "Continuous integration for $JOB_NAME, build $BUILD_NUMBER ($BUILD_ID)"
 echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
 echo ""
 
-# Build all targets
-OLD_IFS="$IFS"
-IFS=$'\n'
-targets_arr=(`xcodeproj-info list-targets`)
-for target in ${targets_arr[@]}
-do
-    # Retrieve the list of configurations to build, and which SDK must be used
-    configuration_data=`xcodeproj-info -t "$target" list-configurations`
-    for configuration_data in ${configuration_data[@]}
-    do
-        # Extract build settings
-        configuration_name=`echo "$configuration_data" | cut -d " " -f 1`
-        configuration_sdk=`echo "$configuration_data" | cut -d " " -f 2`
-        
-        
-    done
-done
-IFS="$OLD_IFS"
-
-
-
-exit 1
-
 # Create a symbolic link from the workspace (which we can access using a URL) and the builds directory. This is where we will store our build logs
 # (this way, we can save them for each build number, and the files get deleted when a build is removed). If we had stored logs in the workspace 
 # directly, we would have lost them when the workspace is cleaned up). 
@@ -53,57 +30,53 @@ if [ -z "$PROVISIONING_PROFILE" ]; then
     exit 1
 fi
 
-# Simulator debug build
-echo "Building simulator Debug binaries..."
-echo "------------------------------------"
-echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_simulator_debug.log"
-xcodebuild clean build -configuration "Debug" -sdk iphonesimulator RUN_CLANG_STATIC_ANALYZER="true" &> "$build_dir/build_simulator_debug.log"
-if [ $? -ne "0" ]; then
-    echo "[STATUS] Build failed"
-    echo ""
-    exit 1  
-fi
-echo "[STATUS] Build succeeded"
-echo ""
-
-# Simulator release build
-echo "Building simulator Release binaries..."
-echo "--------------------------------------"
-echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_simulator_release.log"
-xcodebuild clean build -configuration "Release" -sdk iphonesimulator RUN_CLANG_STATIC_ANALYZER="true" &> "$build_dir/build_simulator_release.log"
-if [ $? -ne "0" ]; then
-    echo "[STATUS] Build failed"
-    echo ""
-    exit 1  
-fi
-echo "[STATUS] Build succeeded"
-echo ""
-
-# Device debug build
-echo "Building device Debug binaries..."
-echo "---------------------------------"
-echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_device_debug.log"
-xcodebuild clean build -configuration "Debug" -sdk iphoneos CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$build_dir/build_device_debug.log"
-if [ $? -ne "0" ]; then
-    echo "[STATUS] Build failed"
-    echo ""
-    exit 1  
-fi
-echo "[STATUS] Build succeeded"
-echo ""
-
-# Device release build
-echo "Building device Release binaries..."
-echo "-----------------------------------"
-echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_device_release.log"
-xcodebuild clean build -configuration "Release" -sdk iphoneos CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$build_dir/build_device_release.log"
-if [ $? -ne "0" ]; then
-    echo "[STATUS] Build failed"
-    echo ""
-    exit 1  
-fi
-echo "[STATUS] Build succeeded"
-echo ""
+# Build all targets
+OLD_IFS="$IFS"
+IFS=$'\n'
+targets_arr=(`xcodeproj-info list-targets`)
+for target in ${targets_arr[@]}
+do
+    # Retrieve the list of configurations to build, and which SDK must be used
+    configuration_data=`xcodeproj-info -t "$target" list-configurations`
+    for configuration_data in ${configuration_data[@]}
+    do
+        # Extract build settings
+        configuration_name=`echo "$configuration_data" | cut -d " " -f 1`
+        configuration_sdk=`echo "$configuration_data" | cut -d " " -f 2`
+        
+        # Derive simulator SDK name
+        configuration_simulator_sdk=`echo "$configuration_sdk" | sed -E 's/iphoneos/iphonesimulator/g'`
+        
+        # Build the simulator binaries (performs a static analysis. Not signed)
+        echo "Building simulator binaries for configuration $configuration_name with SDK $configuration_simulator_sdk..."
+        echo "-------------------------------------------------------------------------------------------------------------------------------"
+        echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_simulator_sdk}.log"
+        xcodebuild clean build -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" RUN_CLANG_STATIC_ANALYZER="true" \
+            &> "$build_dir/build_${configuration_name}_${configuration_simulator_sdk}.log"
+        if [ $? -ne "0" ]; then
+            echo "[STATUS] Build failed"
+            echo ""
+            exit 1  
+        fi
+        echo "[STATUS] Build succeeded"
+        echo ""
+        
+        # Build the device binaries (signed)
+        echo "Building device binaries for configuration $configuration_name with SDK $configuration_sdk..."
+        echo "-------------------------------------------------------------------------------------------------------------------------------"
+        echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_sdk}.log"
+        xcodebuild clean build -configuration "$configuration_name" -sdk "$configuration_sdk" CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
+            PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$build_dir/build_${configuration_name}_${configuration_sdk}.log"
+        if [ $? -ne "0" ]; then
+            echo "[STATUS] Build failed"
+            echo ""
+            exit 1  
+        fi
+        echo "[STATUS] Build succeeded"
+        echo ""
+    done
+done
+IFS="$OLD_IFS"
 
 # TODO: Create ipa
 # See http://stackoverflow.com/questions/2664885/xcode-build-and-archive-from-command-line

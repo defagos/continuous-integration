@@ -8,6 +8,29 @@ echo "Continuous integration for $JOB_NAME, build $BUILD_NUMBER ($BUILD_ID)"
 echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
 echo ""
 
+# Build all targets
+OLD_IFS="$IFS"
+IFS=$'\n'
+targets_arr=(`xcodeproj-info list-targets`)
+for target in ${targets_arr[@]}
+do
+    # Retrieve the list of configurations to build, and which SDK must be used
+    configuration_data=`xcodeproj-info -t "$target" list-configurations`
+    for configuration_data in ${configuration_data[@]}
+    do
+        # Extract build settings
+        configuration_name=`echo "$configuration_data" | cut -d " " -f 1`
+        configuration_sdk=`echo "$configuration_data" | cut -d " " -f 2`
+        
+        
+    done
+done
+IFS="$OLD_IFS"
+
+
+
+exit 1
+
 # Create a symbolic link from the workspace (which we can access using a URL) and the builds directory. This is where we will store our build logs
 # (this way, we can save them for each build number, and the files get deleted when a build is removed). If we had stored logs in the workspace 
 # directly, we would have lost them when the workspace is cleaned up). 

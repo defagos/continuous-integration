@@ -1,0 +1,316 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6F30F81E14E305A300A29F80 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F30F81D14E305A300A29F80 /* Foundation.framework */; };
+		6FA7824214E3268C0055EC5E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7823814E3268C0055EC5E /* main.m */; };
+		6FA7824314E3268C0055EC5E /* PBXProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7823B14E3268C0055EC5E /* PBXProject.m */; };
+		6FA7824414E3268C0055EC5E /* PBXProjFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7823D14E3268C0055EC5E /* PBXProjFile.m */; };
+		6FA7824514E3268C0055EC5E /* PBXTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7823F14E3268C0055EC5E /* PBXTarget.m */; };
+		6FA7824614E3268C0055EC5E /* XCConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7824114E3268C0055EC5E /* XCConfiguration.m */; };
+		6FA7825B14E398100055EC5E /* libddcli.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FA7825A14E398100055EC5E /* libddcli.a */; };
+		6FA7825F14E398870055EC5E /* XcodeProjInfoApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA7825E14E398870055EC5E /* XcodeProjInfoApplication.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6F30F81714E305A300A29F80 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		6F30F81914E305A300A29F80 /* xcodeproj-info */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "xcodeproj-info"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F30F81D14E305A300A29F80 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		6FA7823714E3268C0055EC5E /* xcodeproj-info-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "xcodeproj-info-Prefix.pch"; sourceTree = "<group>"; };
+		6FA7823814E3268C0055EC5E /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6FA7823A14E3268C0055EC5E /* PBXProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXProject.h; sourceTree = "<group>"; };
+		6FA7823B14E3268C0055EC5E /* PBXProject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBXProject.m; sourceTree = "<group>"; };
+		6FA7823C14E3268C0055EC5E /* PBXProjFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXProjFile.h; sourceTree = "<group>"; };
+		6FA7823D14E3268C0055EC5E /* PBXProjFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBXProjFile.m; sourceTree = "<group>"; };
+		6FA7823E14E3268C0055EC5E /* PBXTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXTarget.h; sourceTree = "<group>"; };
+		6FA7823F14E3268C0055EC5E /* PBXTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PBXTarget.m; sourceTree = "<group>"; };
+		6FA7824014E3268C0055EC5E /* XCConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCConfiguration.h; sourceTree = "<group>"; };
+		6FA7824114E3268C0055EC5E /* XCConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XCConfiguration.m; sourceTree = "<group>"; };
+		6FA7825414E398100055EC5E /* DDCliApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliApplication.h; sourceTree = "<group>"; };
+		6FA7825514E398100055EC5E /* DDCliParseException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliParseException.h; sourceTree = "<group>"; };
+		6FA7825614E398100055EC5E /* DDCliUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliUtil.h; sourceTree = "<group>"; };
+		6FA7825714E398100055EC5E /* DDCommandLineInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCommandLineInterface.h; sourceTree = "<group>"; };
+		6FA7825814E398100055EC5E /* DDGetoptLongParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDGetoptLongParser.h; sourceTree = "<group>"; };
+		6FA7825A14E398100055EC5E /* libddcli.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libddcli.a; sourceTree = "<group>"; };
+		6FA7825D14E398870055EC5E /* XcodeProjInfoApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XcodeProjInfoApplication.h; sourceTree = "<group>"; };
+		6FA7825E14E398870055EC5E /* XcodeProjInfoApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XcodeProjInfoApplication.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6F30F81614E305A300A29F80 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F30F81E14E305A300A29F80 /* Foundation.framework in Frameworks */,
+				6FA7825B14E398100055EC5E /* libddcli.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6F30F80E14E305A300A29F80 = {
+			isa = PBXGroup;
+			children = (
+				6FA7825114E398100055EC5E /* Externals */,
+				6FA7824814E326990055EC5E /* Other sources */,
+				6FA7823914E3268C0055EC5E /* Sources */,
+				6F30F81C14E305A300A29F80 /* Frameworks */,
+				6F30F81A14E305A300A29F80 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6F30F81A14E305A300A29F80 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6F30F81914E305A300A29F80 /* xcodeproj-info */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6F30F81C14E305A300A29F80 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6F30F81D14E305A300A29F80 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6FA7823914E3268C0055EC5E /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7823A14E3268C0055EC5E /* PBXProject.h */,
+				6FA7823B14E3268C0055EC5E /* PBXProject.m */,
+				6FA7823C14E3268C0055EC5E /* PBXProjFile.h */,
+				6FA7823D14E3268C0055EC5E /* PBXProjFile.m */,
+				6FA7823E14E3268C0055EC5E /* PBXTarget.h */,
+				6FA7823F14E3268C0055EC5E /* PBXTarget.m */,
+				6FA7824014E3268C0055EC5E /* XCConfiguration.h */,
+				6FA7824114E3268C0055EC5E /* XCConfiguration.m */,
+				6FA7825D14E398870055EC5E /* XcodeProjInfoApplication.h */,
+				6FA7825E14E398870055EC5E /* XcodeProjInfoApplication.m */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		6FA7824814E326990055EC5E /* Other sources */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7823714E3268C0055EC5E /* xcodeproj-info-Prefix.pch */,
+				6FA7823814E3268C0055EC5E /* main.m */,
+			);
+			name = "Other sources";
+			sourceTree = "<group>";
+		};
+		6FA7825114E398100055EC5E /* Externals */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825214E398100055EC5E /* ddcli */,
+			);
+			path = Externals;
+			sourceTree = "<group>";
+		};
+		6FA7825214E398100055EC5E /* ddcli */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825314E398100055EC5E /* include */,
+				6FA7825914E398100055EC5E /* lib */,
+			);
+			path = ddcli;
+			sourceTree = "<group>";
+		};
+		6FA7825314E398100055EC5E /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825414E398100055EC5E /* DDCliApplication.h */,
+				6FA7825514E398100055EC5E /* DDCliParseException.h */,
+				6FA7825614E398100055EC5E /* DDCliUtil.h */,
+				6FA7825714E398100055EC5E /* DDCommandLineInterface.h */,
+				6FA7825814E398100055EC5E /* DDGetoptLongParser.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		6FA7825914E398100055EC5E /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				6FA7825A14E398100055EC5E /* libddcli.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6F30F81814E305A300A29F80 /* xcodeproj-info */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6F30F82814E305A300A29F80 /* Build configuration list for PBXNativeTarget "xcodeproj-info" */;
+			buildPhases = (
+				6F30F81514E305A300A29F80 /* Sources */,
+				6F30F81614E305A300A29F80 /* Frameworks */,
+				6F30F81714E305A300A29F80 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "xcodeproj-info";
+			productName = "xcodeproj-info";
+			productReference = 6F30F81914E305A300A29F80 /* xcodeproj-info */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6F30F81014E305A300A29F80 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = Hortis;
+			};
+			buildConfigurationList = 6F30F81314E305A300A29F80 /* Build configuration list for PBXProject "xcodeproj-info" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6F30F80E14E305A300A29F80;
+			productRefGroup = 6F30F81A14E305A300A29F80 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6F30F81814E305A300A29F80 /* xcodeproj-info */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6F30F81514E305A300A29F80 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FA7824214E3268C0055EC5E /* main.m in Sources */,
+				6FA7824314E3268C0055EC5E /* PBXProject.m in Sources */,
+				6FA7824414E3268C0055EC5E /* PBXProjFile.m in Sources */,
+				6FA7824514E3268C0055EC5E /* PBXTarget.m in Sources */,
+				6FA7824614E3268C0055EC5E /* XCConfiguration.m in Sources */,
+				6FA7825F14E398870055EC5E /* XcodeProjInfoApplication.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		6F30F82614E305A300A29F80 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		6F30F82714E305A300A29F80 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		6F30F82914E305A300A29F80 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "xcodeproj-info-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Externals/ddcli/lib\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6F30F82A14E305A300A29F80 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "xcodeproj-info-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Externals/ddcli/lib\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6F30F81314E305A300A29F80 /* Build configuration list for PBXProject "xcodeproj-info" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F30F82614E305A300A29F80 /* Debug */,
+				6F30F82714E305A300A29F80 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6F30F82814E305A300A29F80 /* Build configuration list for PBXNativeTarget "xcodeproj-info" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6F30F82914E305A300A29F80 /* Debug */,
+				6F30F82A14E305A300A29F80 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6F30F81014E305A300A29F80 /* Project object */;
+}

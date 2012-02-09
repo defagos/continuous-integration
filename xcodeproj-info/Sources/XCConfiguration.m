@@ -28,32 +28,29 @@
 
 #pragma mark Class methods
 
-+ (NSArray *)configurationsForProject:(PBXProject *)project inProjFile:(PBXProjFile *)projFile
++ (NSArray *)configurationsForTarget:(PBXTarget *)target inProjFile:(PBXProjFile *)projFile
 {
     // Extract configurations at the project level
     NSMutableDictionary *nameToConfigurationMap = [NSMutableDictionary dictionary];
-    NSArray *projectConfigurations = [self configurationsFromConfigurationListUUID:project.configurationListUUID 
+    NSArray *projectConfigurations = [self configurationsFromConfigurationListUUID:target.project.configurationListUUID 
                                                                         inProjFile:projFile];
     for (XCConfiguration *projectConfiguration in projectConfigurations) {
         [nameToConfigurationMap setObject:projectConfiguration forKey:projectConfiguration.name];
     }
     
-    // Override with configurations associated with targets (if any)
-    NSArray *targets = [PBXTarget targetsForProject:project inProjFile:projFile];
-    for (PBXTarget *target in targets) {
-        NSArray *targetConfigurations = [XCConfiguration configurationsFromConfigurationListUUID:target.configurationListUUID
-                                                                                      inProjFile:projFile];
-        for (XCConfiguration *targetConfiguration in targetConfigurations) {
-            // Find project configuration to override
-            XCConfiguration *projectConfiguration = [nameToConfigurationMap objectForKey:targetConfiguration.name];
-            if (! projectConfiguration) {
-                continue;
-            }
-            
-            // Override values
-            if (targetConfiguration.sdk) {
-                projectConfiguration.sdk = targetConfiguration.sdk;
-            }
+    // Override with configurations associated with the target (if any)
+    NSArray *targetConfigurations = [XCConfiguration configurationsFromConfigurationListUUID:target.configurationListUUID
+                                                                                  inProjFile:projFile];
+    for (XCConfiguration *targetConfiguration in targetConfigurations) {
+        // Find project configuration to override
+        XCConfiguration *projectConfiguration = [nameToConfigurationMap objectForKey:targetConfiguration.name];
+        if (! projectConfiguration) {
+            continue;
+        }
+        
+        // Override values
+        if (targetConfiguration.sdk) {
+            projectConfiguration.sdk = targetConfiguration.sdk;
         }
     }
     

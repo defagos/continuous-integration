@@ -19,6 +19,7 @@
     NSString *m_uuid;
     NSString *m_name;
     NSString *m_configurationListUUID;
+    PBXProject *m_project;
 }
 
 /**
@@ -32,5 +33,6 @@
 @property (nonatomic, readonly, retain) NSString *uuid;
 @property (nonatomic, readonly, retain) NSString *name;
 @property (nonatomic, readonly, retain) NSString *configurationListUUID;
+@property (nonatomic, readonly, retain) PBXProject *project;
 
 @end

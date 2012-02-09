@@ -13,12 +13,22 @@
 #import "PBXTarget.h"
 #import "XCConfiguration.h"
 
+typedef enum {
+    ActionEnumBegin = 0,
+    ActionListTargets = ActionEnumBegin,
+    ActionListConfigurations,
+    ActionEnumEnd,
+    ActionEnumSize = ActionEnumEnd - ActionEnumBegin
+} Action;
+
 static NSString * const kApplicationVersion = @"1.0";
 
 @interface XcodeProjInfoApplication ()
 
-- (void)displayHelpForApplication:(DDCliApplication *)application;
-- (void)displayVersionForApplication:(DDCliApplication *)application;
+- (int)displayHelpForApplication:(DDCliApplication *)application;
+- (int)displayVersionForApplication:(DDCliApplication *)application;
+- (int)extractTargetsForProject:(PBXProject *)project inProjFile:(PBXProjFile *)projFile;
+- (int)extractConfigurationsForProject:(PBXProject *)project targetName:(NSString *)targetName inProjFile:(PBXProjFile *)projFile;
 
 @end
 
@@ -29,6 +39,7 @@ static NSString * const kApplicationVersion = @"1.0";
 - (void)dealloc
 {
     self.project = nil;
+    self.target = nil;
 
     [super dealloc];
 }
@@ -37,41 +48,20 @@ static NSString * const kApplicationVersion = @"1.0";
 
 @synthesize project = m_project;
 
+@synthesize target = m_target;
+
 @synthesize help = m_help;
 
 @synthesize version = m_version;
 
 #pragma mark Application
 
-- (void)displayHelpForApplication:(DDCliApplication *)application
-{
-    ddprintf(@"Extract information from an Xcode project. Currently only configuration\n"
-             "information is returned, but other options may appear in the future.\n"
-             "\n"
-             "The command locates projects in the directory it is run from. If several\n"
-             "projects are found, the command exits. Use -p to select the project you\n"
-             "want to load in such cases case\n"
-             "\n"
-             "Usage: %@ [-p project_name][-v] [-h]\n"
-             "\n"
-             "Options:\n"
-             "   -h:                    Display this documentation\n"
-             "   -p:                    If you have multiple projects in the same\n"
-             "                          directory, indicate which one must be used using\n"
-             "                          this option (without the .xcodeproj extension)\n"
-             "   -v:                    Print the script version number\n", [application name]);
-}
-
-- (void)displayVersionForApplication:(DDCliApplication *)application
-{
-    ddprintf(@"%@ version %@\n", [application name], kApplicationVersion);
-}
-
 - (void)application:(DDCliApplication *)application willParseOptions:(DDGetoptLongParser *)optionsParser
 {
 	DDGetoptOption optionTable[] = {
 		// Long / var name          Short           Argument
-		{@"project",                'p',            DDGetoptOptionalArgument},
+		{@"project",                'p',            DDGetoptRequiredArgument},
+        {@"target",                 't',            DDGetoptRequiredArgument},
 		{@"version",                'v',            DDGetoptNoArgument},
 		{@"help",                   'h',            DDGetoptNoArgument},
 		{nil,                       0,              0},
@@ -81,16 +71,38 @@ static NSString * const kApplicationVersion = @"1.0";
 
 - (int)application:(DDCliApplication *)application runWithArguments:(NSArray *)arguments
 {
+    // Finish extracting arguments
+    if ([arguments count] == 0) {
+        ddprintf(@"[ERROR] Missing action\n");
+        return [self displayHelpForApplication:application];
+    }
+    else if ([arguments count] > 1) {
+        ddprintf(@"[ERROR] Too many parameters\n");
+        return [self displayHelpForApplication:application];
+    }
+    
+    // Validate remaining arguments
+    NSString *actionArgument = [arguments objectAtIndex:0];
+    Action action;
+    if ([actionArgument isEqualToString:@"list-targets"]) {
+        action = ActionListTargets;
+    }
+    else if ([actionArgument isEqualToString:@"list-configurations"]) {
+        action = ActionListConfigurations;
+    }
+    else {
+        ddprintf(@"[ERROR] Unknown action\n");
+        return [self displayHelpForApplication:application];
+    }
+    
     // Version option
     if (self.version) {
-        [self displayVersionForApplication:application];
-        return EX_OK;
+        return [self displayVersionForApplication:application];
     }
     
     // Help option
     if (self.help) {
-        [self displayHelpForApplication:application];
-        return EX_USAGE;
+        return [self displayHelpForApplication:application];
     }
     
     // Project option
@@ -126,7 +138,7 @@ static NSString * const kApplicationVersion = @"1.0";
         
         xcodeProjFilePath = [currentDirectoryPath stringByAppendingPathComponent:xcodeProjFileName];
     }
-        
+    
     // Load .pbxproj
     NSString *projectFilePath = [xcodeProjFilePath stringByAppendingPathComponent:@"project.pbxproj"];
     PBXProjFile *projFile = [[[PBXProjFile alloc] initWithFilePath:projectFilePath] autorelease];
@@ -134,11 +146,110 @@ static NSString * const kApplicationVersion = @"1.0";
         return EX_SOFTWARE;
     }
     
-    // Extract configuration information
+    // Load project
     PBXProject *project = [PBXProject projectInProjFile:projFile];
-    NSArray *projectConfigurations = [XCConfiguration configurationsForProject:project inProjFile:projFile];
-    for (XCConfiguration *configuration in projectConfigurations) {
-        ddprintf(@"%@ %@\n", configuration.name, configuration.sdk);
+    if (! project) {
+        return EX_SOFTWARE;
+    }
+    
+    // Execute action
+    switch (action) {
+        case ActionListTargets: {
+            return [self extractTargetsForProject:project inProjFile:projFile];
+            break;
+        }
+            
+        case ActionListConfigurations: {
+            return [self extractConfigurationsForProject:project targetName:self.target inProjFile:projFile];
+            break;
+        }
+                        
+        default: {
+            ddprintf(@"[ERROR] Unsupported action\n");
+            return EX_SOFTWARE;
+            break;
+        }
+    }
+}
+
+#pragma mark Functionalities
+
+- (int)displayHelpForApplication:(DDCliApplication *)application
+{
+    ddprintf(@"\n"
+             "Extract information from an Xcode project. Currently only basic options\n"
+             "are available, but more may appear in the future.\n"
+             "\n"
+             "Information is extracted by invoking actions. Use -p and -t options to\n"
+             "filter out projects or targets you do not care about.\n"
+             "\n"
+             "The command locates projects in the directory it is run from. If several\n"
+             "projects are found, the command exits. Use -p to select the project you\n"
+             "want to load in such cases case\n"
+             "\n"
+             "Usage: %@ [-p project_name] [-v] [-h] action\n"
+             "\n"
+             "Mandatory parameters:\n"
+             "   action                 The action to be performed:\n"
+             "                            list-targets\n"
+             "                            list-configurations\n"
+             "\n"
+             "Options:\n"
+             "   -h (--help):           Display this documentation\n"
+             "   -p (--project):        If you have multiple projects in the same\n"
+             "                          directory, indicate which one must be used using\n"
+             "                          this option (without the .xcodeproj extension)\n"
+             "   -t (--target):         Restrict output to a given target\n"
+             "   -v (--version):        Print the script version number\n", [application name]);
+    
+    return EX_USAGE;
+}
+
+- (int)displayVersionForApplication:(DDCliApplication *)application
+{
+    ddprintf(@"%@ version %@\n", [application name], kApplicationVersion);
+    
+    return EX_OK;
+}
+
+- (int)extractTargetsForProject:(PBXProject *)project inProjFile:(PBXProjFile *)projFile
+{
+    NSArray *targets = [PBXTarget targetsForProject:project inProjFile:projFile];
+    for (PBXTarget *target in targets) {
+        ddprintf(@"%@\n", target.name);
+    }
+    
+    return EX_OK;
+}
+
+- (int)extractConfigurationsForProject:(PBXProject *)project targetName:(NSString *)targetName inProjFile:(PBXProjFile *)projFile
+{
+    NSArray *targets = [PBXTarget targetsForProject:project inProjFile:projFile];
+    
+    // Target specified: Display only corresponding configurations
+    if (targetName) {
+        PBXTarget *target = [[targets filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", targetName]] objectAtIndex:0];
+        if (! target) {
+            ddprintf(@"[ERROR] Target %@ not found\n", targetName);
+            return EX_SOFTWARE;
+        }
+        
+        NSArray *configurations = [XCConfiguration configurationsForTarget:target inProjFile:projFile];
+        for (XCConfiguration *configuration in configurations) {
+            ddprintf(@"%@ %@\n", configuration.name, configuration.sdk);
+        }
+    }
+    // No target specified: Display configurations for all targets
+    else {
+        NSArray *targets = [PBXTarget targetsForProject:project inProjFile:projFile];
+        for (PBXTarget *target in targets) {
+            ddprintf(@"Target: %@\n", target.name);
+            NSArray *configurations = [XCConfiguration configurationsForTarget:target inProjFile:projFile];
+            for (XCConfiguration *configuration in configurations) {
+                ddprintf(@"    %@ %@\n", configuration.name, configuration.sdk);
+            }
+            ddprintf(@"\n");
+        }
     }
     
     return EX_OK;

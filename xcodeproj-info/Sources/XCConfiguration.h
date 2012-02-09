@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Hortis. All rights reserved.
 //
 
-#import "PBXProject.h"
 #import "PBXProjFile.h"
 #import "PBXTarget.h"
 
@@ -23,11 +22,9 @@
 }
 
 /**
- * Parse a .pbxproj file and returns the array of configurations for a given project, as an
- * array of XCConfiguration objects. The result takes into account overriding which might
- * have been made by targets
+ * Parse a .pbxproj file and returns the array of configurations for a given target
  */
-+ (NSArray *)configurationsForProject:(PBXProject *)project inProjFile:(PBXProjFile *)projFile;
++ (NSArray *)configurationsForTarget:(PBXTarget *)target inProjFile:(PBXProjFile *)projFile;
 
 /**
  * Configuration data

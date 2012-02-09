@@ -11,12 +11,14 @@
 @interface XcodeProjInfoApplication : NSObject <DDCliApplicationDelegate> {
 @private
     NSString *m_project;
+    NSString *m_target;
     BOOL m_help;
     BOOL m_version;
 }
 
 // Command line parameters with argument
 @property (nonatomic, retain) NSString *project;
+@property (nonatomic, retain) NSString *target;
 
 // Command-line parameters without argument
 @property (nonatomic, assign, getter=isHelp) BOOL help;

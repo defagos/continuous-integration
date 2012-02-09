@@ -15,6 +15,7 @@
 @property (nonatomic, retain) NSString *uuid;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *configurationListUUID;
+@property (nonatomic, retain) PBXProject *project;
 
 @end
 
@@ -38,6 +39,7 @@
         target.uuid = targetUUID;
         target.name = [propertiesDict objectForKey:@"name"];
         target.configurationListUUID = [propertiesDict objectForKey:@"buildConfigurationList"];
+        target.project = project;
         [targets addObject:target];    
     }
     return [NSArray arrayWithArray:targets];
@@ -50,6 +52,7 @@
     self.uuid = nil;
     self.name = nil;
     self.configurationListUUID = nil;
+    self.project = nil;
     
     [super dealloc];
 }
@@ -61,6 +64,8 @@
 @synthesize name = m_name;
 
 @synthesize configurationListUUID = m_configurationListUUID;
+
+@synthesize project = m_project;
 
 #pragma mark Description
 

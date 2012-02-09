@@ -21,9 +21,9 @@
 }
 
 /**
- * Parse a .pbxproj file and returns the array of projects found within it as an array of PBXProject objects
+ * Parse a .pbxproj file and returns the project within it
  */
-+ (NSArray *)projectsInProjFile:(PBXProjFile *)projFile;
++ (PBXProject *)projectInProjFile:(PBXProjFile *)projFile;
 
 /**
  * Project data

@@ -8,6 +8,8 @@
 
 #import "PBXProject.h"
 
+#import "DDCliUtil.h"
+
 @interface PBXProject ()
 
 @property (nonatomic, retain) NSString *uuid;
@@ -20,9 +22,8 @@
 
 #pragma mark Class methods
 
-+ (NSArray *)projectsInProjFile:(PBXProjFile *)projFile
++ (PBXProject *)projectInProjFile:(PBXProjFile *)projFile
 {
-    NSMutableArray *projects = [NSMutableArray array];
     for (NSString *uuid in [projFile.objectsDict allKeys]) {
         // Only consider projects
         NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:uuid];
@@ -35,9 +36,12 @@
         project.uuid = uuid;
         project.targetUUIDs = [propertiesDict objectForKey:@"targets"];
         project.configurationListUUID = [propertiesDict objectForKey:@"buildConfigurationList"];
-        [projects addObject:project];
+        
+        return project;
     }
-    return [NSArray arrayWithArray:projects];
+    
+    ddprintf(@"[ERROR] No project data found in %@", projFile);
+    return nil;
 }
 
 #pragma Object creation and destruction

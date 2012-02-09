@@ -135,14 +135,11 @@ static NSString * const kApplicationVersion = @"1.0";
     }
     
     // Extract configuration information
-    NSArray *projects = [PBXProject projectsInProjFile:projFile];
-    for (PBXProject *project in projects) {
-        NSArray *projectConfigurations = [XCConfiguration configurationsForProject:project inProjFile:projFile];
-        NSLog(@"%@", projectConfigurations);
+    PBXProject *project = [PBXProject projectInProjFile:projFile];
+    NSArray *projectConfigurations = [XCConfiguration configurationsForProject:project inProjFile:projFile];
+    for (XCConfiguration *configuration in projectConfigurations) {
+        ddprintf(@"%@ %@\n", configuration.name, configuration.sdk);
     }
-    
-    
-    // TODO: Override with target configuration if available, otherwise use project configuration
     
     return EX_OK;
 }

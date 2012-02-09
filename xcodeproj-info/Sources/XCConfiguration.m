@@ -13,12 +13,6 @@
 @interface XCConfiguration ()
 
 /**
- * Parse a .pbxproj file and returns the array of configurations for a given target, as an
- * array of XCConfiguration objects
- */ 
-+ (NSArray *)configurationsForTarget:(PBXTarget *)target inProjFile:(PBXProjFile *)projFile;
-
-/**
  * Parse a .pbxproj file and returns the array of configurations for a given configuration uuid
  * code list, array of XCConfiguration objects
  */ 
@@ -36,16 +30,40 @@
 
 + (NSArray *)configurationsForProject:(PBXProject *)project inProjFile:(PBXProjFile *)projFile
 {
-    return [self configurationsFromConfigurationListUUID:project.configurationListUUID inProjFile:projFile];
-}
-
-+ (NSArray *)configurationsForTarget:(PBXTarget *)target inProjFile:(PBXProjFile *)projFile
-{
-    return [self configurationsFromConfigurationListUUID:target.configurationListUUID inProjFile:projFile];
+    // Extract configurations at the project level
+    NSMutableDictionary *nameToConfigurationMap = [NSMutableDictionary dictionary];
+    NSArray *projectConfigurations = [self configurationsFromConfigurationListUUID:project.configurationListUUID 
+                                                                        inProjFile:projFile];
+    for (XCConfiguration *projectConfiguration in projectConfigurations) {
+        [nameToConfigurationMap setObject:projectConfiguration forKey:projectConfiguration.name];
+    }
+    
+    // Override with configurations associated with targets (if any)
+    NSArray *targets = [PBXTarget targetsForProject:project inProjFile:projFile];
+    for (PBXTarget *target in targets) {
+        NSArray *targetConfigurations = [XCConfiguration configurationsFromConfigurationListUUID:target.configurationListUUID
+                                                                                      inProjFile:projFile];
+        for (XCConfiguration *targetConfiguration in targetConfigurations) {
+            // Find project configuration to override
+            XCConfiguration *projectConfiguration = [nameToConfigurationMap objectForKey:targetConfiguration.name];
+            if (! projectConfiguration) {
+                continue;
+            }
+            
+            // Override values
+            if (targetConfiguration.sdk) {
+                projectConfiguration.sdk = targetConfiguration.sdk;
+            }
+        }
+    }
+    
+    NSSortDescriptor *uuidSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"uuid" ascending:YES];
+    return [[nameToConfigurationMap allValues] sortedArrayUsingDescriptors:[NSArray arrayWithObject:uuidSortDescriptor]];
 }
 
 + (NSArray *)configurationsFromConfigurationListUUID:(NSString *)configurationListUUID inProjFile:(PBXProjFile *)projFile
 {
+    // Extract configuration UUIDs from the configuration list
     NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationListUUID];
     if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"XCConfigurationList"]) {
         ddprintf(@"[WARN] The uuid %@ does not correspond to a configuration list; skipped\n", configurationListUUID);
@@ -53,14 +71,17 @@
     }
     NSArray *configurationUUIDs = [propertiesDict objectForKey:@"buildConfigurations"];
     
+    // Extract configurations
     NSMutableArray *configurations = [NSMutableArray array];
     for (NSString *configurationUUID in configurationUUIDs) {
+        // Check that the uuid corresponds to a configuration
         NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:configurationUUID];
         if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"XCBuildConfiguration"]) {
             ddprintf(@"[WARN] The uuid %@ does not correspond to a configuration; skipped\n", configurationUUID);
             continue;
         }
         
+        // Extract configuration data
         XCConfiguration *configuration = [[[XCConfiguration alloc] init] autorelease];
         configuration.uuid = configurationUUID;
         configuration.name = [propertiesDict objectForKey:@"name"];
@@ -68,7 +89,8 @@
         [configurations addObject:configuration];
     }
     
-    return [NSArray arrayWithArray:configurations];
+    NSSortDescriptor *uuidSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"uuid" ascending:YES];
+    return [configurations sortedArrayUsingDescriptors:[NSArray arrayWithObject:uuidSortDescriptor]];
 }
 
 #pragma mark Object creation and destruction

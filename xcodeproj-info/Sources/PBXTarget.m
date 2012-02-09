@@ -27,10 +27,9 @@
 {
     NSMutableArray *targets = [NSMutableArray array];
     for (NSString *targetUUID in project.targetUUIDs) {
-        // Check that the uuid corresponds to a target
+        // Check that the uuid corresponds to a target (can also be script phases, e.g., which we are not interested in)
         NSDictionary *propertiesDict = [projFile.objectsDict objectForKey:targetUUID];
         if (! [[propertiesDict objectForKey:@"isa"] isEqualToString:@"PBXNativeTarget"]) {
-            ddprintf(@"[WARN] The uuid %@ does not correspond to a target; skipped\n", targetUUID);
             continue;
         }
         

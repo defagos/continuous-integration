@@ -3,6 +3,7 @@
 # Constants
 VERSION_NBR=1.0
 SCRIPT_NAME=`basename $0`
+EXECUTION_DIR=`pwd`
 
 # User manual
 usage() {
@@ -59,17 +60,50 @@ if [ -z "$PROVISIONING_PROFILE" ]; then
     exit 1
 fi
 
-# Project name (optional, used for disambiguation)
-if [ -z "$param_project_name" ]; then
-    project_parameter=""
-else
-    project_parameter="-p $param_project_name"
+# Check that the required tools are available
+which xcodeproj-info > /dev/null
+if [ "$?" -ne "0" ]; then
+    echo "[ERROR] The xcodeproj-info tool (bundled with this script) must be available in your path"
+    echo ""
+    exit 1
 fi
 
 # Check we are being run by Jenkins. Basic: Just test one Jenkins environment variable. Should suffice, though
 if [ -z "$BUILD_ID" ]; then
     echo "[ERROR] This script must be run from a Jenkins job"
     exit 1
+fi
+
+# Check that exactly one .xcodeproj exists in the current directory
+if [ -z "$param_project_name" ]; then
+    # Find all .xcodeproj directories. ls does not provide a way to list directories only, we must do this manually
+    xcodeproj_list=`ls -l | grep ".xcodeproj" | grep "^d"`
+    
+    # Not found
+    if [ "$?" -ne "0" ]; then
+        echo "[Error] No Xcode project found in the current directory"
+        echo ""
+        exit 1
+    fi
+    
+    # Several projects found
+    if [ `echo "$xcodeproj_list" | wc -l` -ne "1" ]; then
+        echo "[Error] Several Xcode projects found in the current directory; use the -p option for disambiguation"
+        echo ""
+        exit 1
+    fi
+    
+    # Extract the project name, stripping off the .xcodeproj
+    project_name=`echo "$xcodeproj_list" | awk '{print $9}' | sed 's/.xcodeproj//g'`
+# Else check that the project specified exists
+else
+    if [ ! -d "$EXECUTION_DIR/$param_project_name.xcodeproj" ]; then
+        echo "[Error] The project $param_project_name does not exist"
+        echo ""
+        exit 1
+    fi
+    
+    project_name="$param_project_name"
 fi
 
 echo ""
@@ -90,11 +124,13 @@ build_dir="$buildlogs_dir/$BUILD_NUMBER"
 # Build all targets
 OLD_IFS="$IFS"
 IFS=$'\n'
-targets_arr=(`xcodeproj-info list-targets`)
+targets_arr=(`xcodeproj-info -p $project_name list-targets`)
 for target in ${targets_arr[@]}
 do
     # Retrieve the list of configurations to build, and which SDK must be used
-    configuration_data=`xcodeproj-info -t "$target" list-configurations`
+    configuration_data=`xcodeproj-info -p $project_name -t "$target" list-configurations`
+    
+    # Build all configurations for all targets
     for configuration_data in ${configuration_data[@]}
     do
         # Extract build settings
@@ -109,9 +145,9 @@ do
         echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
         echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_simulator_sdk}.log"
         log_file_path="$build_dir/build_${configuration_name}_${configuration_simulator_sdk}.log"
-        xcodebuild clean build -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" RUN_CLANG_STATIC_ANALYZER="true" \
-            &> "$log_file_path"
-        if [ $? -ne "0" ]; then
+        xcodebuild clean build -project "$project_name.xcodeproj" -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" \
+            RUN_CLANG_STATIC_ANALYZER="true" &> "$log_file_path"
+        if [ "$?" -ne "0" ]; then
             echo "[STATUS] Build failed (log excerpt follows)"
             echo ""
             tail -n 20 "$log_file_path"
@@ -125,9 +161,9 @@ do
         echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
         echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_sdk}.log"
         log_file_path="$build_dir/build_${configuration_name}_${configuration_sdk}.log"
-        xcodebuild clean build -configuration "$configuration_name" -sdk "$configuration_sdk" CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
-            PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$log_file_path"
-        if [ $? -ne "0" ]; then
+        xcodebuild clean build -project "$project_name.xcodeproj" -configuration "$configuration_name" -sdk "$configuration_sdk" \
+            CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$log_file_path"            
+        if [ "$?" -ne "0" ]; then
             echo "[STATUS] Build failed (log excerpt follows)"
             echo ""
             tail -n 20 "$log_file_path"

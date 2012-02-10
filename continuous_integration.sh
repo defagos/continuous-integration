@@ -1,6 +1,76 @@
 #!/bin/bash
 
-# TODO: Document this script (most notably that it is meant to be used with Jenkins)
+# Constants
+VERSION_NBR=1.0
+SCRIPT_NAME=`basename $0`
+
+# User manual
+usage() {
+    echo ""
+    echo "Script for iOS continuous integration, meant to be called from a Jenkins job. Simply"
+    echo "run the script from a directory containing a .xcodeproj to have all configurations"
+    echo "for all targets built. Users will be notified in case of build failure, and will"
+    echo "receive a mail with a log excerpt, as well as links to the full compilation logs."
+    echo ""
+    echo "To be used, this script requires two environment variables to be set:"
+    echo "  CODE_SIGN_IDENTITY: The identity to use for code signing (he name of the keychain "
+    echo "                      certificate to use"
+    echo "  PROVISIONING_PROFILE: The identifier of the provisioning profile to use"
+    echo ""
+    echo "Usage: $SCRIPT_NAME [-v] [-h] [-p project]"
+    echo ""
+    echo "Options:"
+    echo "   -h:                    Display this documentation"
+    echo "   -v:                    Print the script version number"
+    echo ""
+}
+
+# Processing command-line parameters
+while getopts hp:v OPT; do
+    case "$OPT" in
+        h)
+            usage
+            exit 0
+            ;;
+        p) 
+            param_project_name="$OPTARG"
+            ;;
+        v)
+            echo "$SCRIPT_NAME version $VERSION_NBR"
+            exit 0
+            ;;
+        \?)
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+# Check required environment variables
+if [ -z "$CODE_SIGN_IDENTITY" ]; then
+    echo "[ERROR] The CODE_SIGN_IDENTITY environment variable must be set to the code signing identity to use"
+    echo ""
+    exit 1
+fi
+
+if [ -z "$PROVISIONING_PROFILE" ]; then
+    echo "[ERROR] The PROVISIONING_PROFILE environment variable must be set to the identififer of the provisioning profile to use"
+    echo ""
+    exit 1
+fi
+
+# Project name (optional, used for disambiguation)
+if [ -z "$param_project_name" ]; then
+    project_parameter=""
+else
+    project_parameter="-p $param_project_name"
+fi
+
+# Check we are being run by Jenkins. Basic: Just test one Jenkins environment variable. Should suffice, though
+if [ -z "$BUILD_ID" ]; then
+    echo "[ERROR] This script must be run from a Jenkins job"
+    exit 1
+fi
 
 echo ""
 echo "**************************************************************************************************************************************************"
@@ -16,19 +86,6 @@ if [ ! -e "$buildlogs_dir" ]; then
     ln -s "$WORKSPACE/../builds/" "$buildlogs_dir"
 fi
 build_dir="$buildlogs_dir/$BUILD_NUMBER"
-
-# Check required environment variables
-if [ -z "$CODE_SIGN_IDENTITY" ]; then
-    echo "[ERROR] The CODE_SIGN_IDENTITY environment variable must be set to the code signing identity to use"
-    echo ""
-    exit 1
-fi
-
-if [ -z "$PROVISIONING_PROFILE" ]; then
-    echo "[ERROR] The PROVISIONING_PROFILE environment variable must be set to the identififer of the provisioning profile to use"
-    echo ""
-    exit 1
-fi
 
 # Build all targets
 OLD_IFS="$IFS"

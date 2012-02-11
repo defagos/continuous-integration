@@ -71,6 +71,16 @@ static NSString * const kApplicationVersion = @"1.0";
 
 - (int)application:(DDCliApplication *)application runWithArguments:(NSArray *)arguments
 {
+    // Version option
+    if (self.version) {
+        return [self displayVersionForApplication:application];
+    }
+    
+    // Help option
+    if (self.help) {
+        return [self displayHelpForApplication:application];
+    }
+    
     // Finish extracting arguments
     if ([arguments count] == 0) {
         ddprintf(@"[ERROR] Missing action\n");
@@ -94,17 +104,7 @@ static NSString * const kApplicationVersion = @"1.0";
         ddprintf(@"[ERROR] Unknown action\n");
         return [self displayHelpForApplication:application];
     }
-    
-    // Version option
-    if (self.version) {
-        return [self displayVersionForApplication:application];
-    }
-    
-    // Help option
-    if (self.help) {
-        return [self displayHelpForApplication:application];
-    }
-    
+        
     // Project option
     NSString *currentDirectoryPath = [[NSFileManager defaultManager] currentDirectoryPath];
     NSString *xcodeProjFilePath = nil;
@@ -192,7 +192,8 @@ static NSString * const kApplicationVersion = @"1.0";
              "Mandatory parameters:\n"
              "   action                 The action to be performed:\n"
              "                            list-targets\n"
-             "                            list-configurations\n"
+             "                            list-configurations: Output format is\n"
+             "                                target configuration sdk\n"
              "\n"
              "Options:\n"
              "   -h (--help):           Display this documentation\n"
@@ -228,28 +229,20 @@ static NSString * const kApplicationVersion = @"1.0";
     
     // Target specified: Display only corresponding configurations
     if (targetName) {
-        NSArray *filteredTargets = [targets filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", targetName]];
-        if ([filteredTargets count] == 0) {
+        targets = [targets filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name == %@", targetName]];
+        if ([targets count] == 0) {
             ddprintf(@"[ERROR] Target %@ not found\n", targetName);
             return EX_SOFTWARE;
         }
-        
-        PBXTarget *target = [filteredTargets objectAtIndex:0];        
+    }
+    
+    // List all configurations
+    for (PBXTarget *target in targets) {
         NSArray *configurations = [XCConfiguration configurationsForTarget:target inProjFile:projFile];
         for (XCConfiguration *configuration in configurations) {
-            ddprintf(@"%@ %@\n", configuration.name, configuration.sdk);
-        }
-    }
-    // No target specified: Display configurations for all targets
-    else {
-        NSArray *targets = [PBXTarget targetsForProject:project inProjFile:projFile];
-        for (PBXTarget *target in targets) {
-            ddprintf(@"Target: %@\n", target.name);
-            NSArray *configurations = [XCConfiguration configurationsForTarget:target inProjFile:projFile];
-            for (XCConfiguration *configuration in configurations) {
-                ddprintf(@"    %@ %@\n", configuration.name, configuration.sdk);
-            }
-            ddprintf(@"\n");
+            // Separate using tabs. Easy to detect as delimiters by command-line tools like cut, and cannot be
+            // part of target or configuration names
+            ddprintf(@"%@\t%@\t%@\n", target.name, configuration.name, configuration.sdk);
         }
     }
     

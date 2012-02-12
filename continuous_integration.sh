@@ -12,31 +12,41 @@ usage() {
     echo "run the script from a directory containing a .xcodeproj to have all configurations"
     echo "for all targets built. Users will be notified in case of build failure, and will"
     echo "receive a mail with a log excerpt, as well as links to the full compilation logs."
-    echo "Optional parameters let you select only some targets or configuration if you do"
-    echo "not want (or need) to build all of them."
+    echo "Optional parameters let you select only some project (if only one project exists"
+    echo "in the directory where the script is run, this parameter can be omitted, otherwise"
+    echo "it is mandatory) or some specific target (if you do not need to build all of them)"
     echo ""
     echo "To be used, this script requires two environment variables to be set:"
     echo "  CODE_SIGN_IDENTITY: The identity to use for code signing (he name of the keychain "
     echo "                      certificate to use"
     echo "  PROVISIONING_PROFILE: The identifier of the provisioning profile to use"
     echo ""
-    echo "Usage: $SCRIPT_NAME [-v] [-h] [-p project] [-t target] [-c configuration]"
+    echo "Usage: $SCRIPT_NAME [-p project] [-t target] [-v] [-h]"
     echo ""
     echo "Options:"
     echo "   -h:                    Display this documentation"
+    echo "   -p:                    If several projects are available, use the -p to select"
+    echo "   -t:                    An optional target to build. If omitted, all targets are"
+    echo "                          built"
     echo "   -v:                    Print the script version number"
     echo ""
 }
 
 # Processing command-line parameters
-while getopts hp:v OPT; do
+while getopts c:hp:t:v OPT; do
     case "$OPT" in
+        c)
+            param_configuration_name="$OPTARG"
+            ;;
         h)
             usage
             exit 0
             ;;
         p) 
             param_project_name="$OPTARG"
+            ;;
+        t) 
+            param_target_name="$OPTARG"
             ;;
         v)
             echo "$SCRIPT_NAME version $VERSION_NBR"
@@ -82,14 +92,14 @@ if [ -z "$param_project_name" ]; then
     
     # Not found
     if [ "$?" -ne "0" ]; then
-        echo "[Error] No Xcode project found in the current directory"
+        echo "[ERROR] No Xcode project found in the current directory"
         echo ""
         exit 1
     fi
     
     # Several projects found
     if [ `echo "$xcodeproj_list" | wc -l` -ne "1" ]; then
-        echo "[Error] Several Xcode projects found in the current directory; use the -p option for disambiguation"
+        echo "[ERROR] Several Xcode projects found in the current directory; use the -p option for disambiguation"
         echo ""
         exit 1
     fi
@@ -99,19 +109,13 @@ if [ -z "$param_project_name" ]; then
 # Else check that the project specified exists
 else
     if [ ! -d "$EXECUTION_DIR/$param_project_name.xcodeproj" ]; then
-        echo "[Error] The project $param_project_name does not exist"
+        echo "[ERROR] The project $param_project_name does not exist"
         echo ""
         exit 1
     fi
     
     project_name="$param_project_name"
 fi
-
-echo ""
-echo "**************************************************************************************************************************************************"
-echo "Continuous integration for $JOB_NAME, build $BUILD_NUMBER ($BUILD_ID)"
-echo "**************************************************************************************************************************************************"
-echo ""
 
 # Create a symbolic link from the workspace (which we can access using a URL) and the builds directory. This is where we will store our build logs
 # (this way, we can save them for each build number, and the files get deleted when a build is removed). If we had stored logs in the workspace 
@@ -122,8 +126,26 @@ if [ ! -e "$buildlogs_dir" ]; then
 fi
 build_dir="$buildlogs_dir/$BUILD_NUMBER"
 
-# Build all targets
-xcodeproj-info -p "$project_name" list-configurations | while read configuration; do
+# Find all configurations to consider
+if [ ! -z "$param_target_name" ]; then
+    configurations=`xcodeproj-info -p "$project_name" -t "$target_name" list-configurations`
+    if [ "$?" -ne "0" ]; then
+        echo "[ERROR] The target $param_target_name does not exist"
+        echo ""
+        exit 1
+    fi
+else
+    configurations=`xcodeproj-info -p "$project_name" list-configurations`
+fi
+
+echo ""
+echo "**************************************************************************************************************************************************"
+echo "Continuous integration for $JOB_NAME, build $BUILD_NUMBER ($BUILD_ID)"
+echo "**************************************************************************************************************************************************"
+echo ""
+
+# Build all configurations for all targets to consider
+echo "$configurations" | while read configuration; do
     # Extract build settings
     target_name=`echo "$configuration" | cut -f 1`
     configuration_name=`echo "$configuration" | cut -f 2`

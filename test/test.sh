@@ -19,5 +19,5 @@ if [ ! -d "$output_dir" ]; then
 fi
 
 pushd "$WORKSPACE" > /dev/null
-"$SCRIPT_FILE_DIR/../continuous_integration.sh" -p "Test Application"
+"$SCRIPT_FILE_DIR/../continuous_integration.sh"
 popd > /dev/null

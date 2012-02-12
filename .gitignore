@@ -1,1 +1,4 @@
 .DS_Store
+test/jenkins_dummy_job/builds/
+test/jenkins_dummy_job/workspace/build/
+test/jenkins_dummy_job/workspace/buildlogs

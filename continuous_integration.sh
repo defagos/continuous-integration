@@ -21,9 +21,11 @@ usage() {
     echo "                      certificate to use"
     echo "  PROVISIONING_PROFILE: The identifier of the provisioning profile to use"
     echo ""
-    echo "Usage: $SCRIPT_NAME [-p project] [-t target] [-v] [-h]"
+    echo "Usage: $SCRIPT_NAME [-p project] [-t target] [-c] [-e] [-v] [-h]"
     echo ""
     echo "Options:"
+    echo "   -c:                    Perform a clean before each build"
+    echo "   -e:                    Exit on failure"
     echo "   -h:                    Display this documentation"
     echo "   -p:                    If several projects are available, use the -p to select"
     echo "   -t:                    An optional target to build. If omitted, all targets are"
@@ -33,10 +35,13 @@ usage() {
 }
 
 # Processing command-line parameters
-while getopts c:hp:t:v OPT; do
+while getopts cehp:t:v OPT; do
     case "$OPT" in
         c)
-            param_configuration_name="$OPTARG"
+            param_clean_first=true;
+            ;;
+        e)
+            param_exit_on_failure=true;
             ;;
         h)
             usage
@@ -128,7 +133,7 @@ build_dir="$buildlogs_dir/$BUILD_NUMBER"
 
 # Find all configurations to consider
 if [ ! -z "$param_target_name" ]; then
-    configurations=`xcodeproj-info -p "$project_name" -t "$target_name" list-configurations`
+    configurations=`xcodeproj-info -p "$project_name" -t "$param_target_name" list-configurations`
     if [ "$?" -ne "0" ]; then
         echo "[ERROR] The target $param_target_name does not exist"
         echo ""
@@ -155,35 +160,47 @@ echo "$configurations" | while read configuration; do
     configuration_simulator_sdk=`echo "$configuration_sdk" | sed -E 's/iphoneos/iphonesimulator/g'`
     
     # Build the simulator binaries (performs a static analysis. Not signed)
-    echo "Building simulator binaries for configuration $configuration_name with SDK $configuration_simulator_sdk..."
+    echo "Building simulator binaries for target $target_name and configuration $configuration_name with SDK $configuration_simulator_sdk..."
     echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
     echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_simulator_sdk}.log"
     log_file_path="$build_dir/build_${configuration_name}_${configuration_simulator_sdk}.log"
-    xcodebuild clean build -project "$project_name.xcodeproj" -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" \
+    if [ ! -z "$param_clean_first" ]; then
+        xcodebuild clean build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
+    fi
+    xcodebuild build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" \
         RUN_CLANG_STATIC_ANALYZER="true" &> "$log_file_path"
     if [ "$?" -ne "0" ]; then
         echo "[STATUS] Build failed (log excerpt follows)"
         echo ""
         tail -n 20 "$log_file_path"
-        exit 1  
+        if [ ! -z "$param_exit_on_failure" ]; then
+            exit 1
+        fi
+    else
+        echo "[STATUS] Build succeeded"
     fi
-    echo "[STATUS] Build succeeded"
     echo ""
     
     # Build the device binaries (signed)
-    echo "Building device binaries for configuration $configuration_name with SDK $configuration_sdk..."
+    echo "Building device binaries for target $target_name and configuration $configuration_name with SDK $configuration_sdk..."
     echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
     echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_sdk}.log"
     log_file_path="$build_dir/build_${configuration_name}_${configuration_sdk}.log"
-    xcodebuild clean build -project "$project_name.xcodeproj" -configuration "$configuration_name" -sdk "$configuration_sdk" \
+    if [ ! -z "$param_clean_first" ]; then
+        xcodebuild clean -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
+    fi
+    xcodebuild clean build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name" -sdk "$configuration_sdk" \
         CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$log_file_path"            
     if [ "$?" -ne "0" ]; then
         echo "[STATUS] Build failed (log excerpt follows)"
         echo ""
         tail -n 20 "$log_file_path"
-        exit 1  
+        if [ ! -z "$param_exit_on_failure" ]; then
+            exit 1
+        fi
+    else
+        echo "[STATUS] Build succeeded"
     fi
-    echo "[STATUS] Build succeeded"
     echo ""
 done
 

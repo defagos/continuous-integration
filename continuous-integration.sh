@@ -209,7 +209,7 @@ for configuration in "${configurations_arr[@]}"; do
     if $param_clean_first; then
         xcodebuild clean -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
     fi
-    xcodebuild clean build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name" -sdk "$configuration_sdk" \
+    xcodebuild build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name" -sdk "$configuration_sdk" \
         CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" PROVISIONING_PROFILE="$PROVISIONING_PROFILE" &> "$log_file_path"            
     if [ "$?" -ne "0" ]; then
         echo "[STATUS] Build failed (log excerpt follows)"

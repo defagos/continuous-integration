@@ -160,7 +160,7 @@ echo "**************************************************************************
 echo "Continuous integration for $JOB_NAME, build $BUILD_NUMBER ($BUILD_ID)"
 echo "**************************************************************************************************************************************************"
 echo ""
-echo ""
+echo "[STATUS] Start date: "`date`
 echo ""
 
 build_successful=true
@@ -179,6 +179,7 @@ for configuration in "${configurations_arr[@]}"; do
     echo "Building simulator binaries for target $target_name and configuration $configuration_name with SDK $configuration_simulator_sdk..."
     echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
     echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_simulator_sdk}.log"
+    echo ""
     log_file_path="$build_dir/build_${configuration_name}_${configuration_simulator_sdk}.log"
     if $param_clean_first; then
         xcodebuild clean build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
@@ -203,6 +204,7 @@ for configuration in "${configurations_arr[@]}"; do
     echo "Building device binaries for target $target_name and configuration $configuration_name with SDK $configuration_sdk..."
     echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
     echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_sdk}.log"
+    echo ""
     log_file_path="$build_dir/build_${configuration_name}_${configuration_sdk}.log"
     if $param_clean_first; then
         xcodebuild clean -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
@@ -223,6 +225,9 @@ for configuration in "${configurations_arr[@]}"; do
     fi
     echo ""
 done
+
+echo "[STATUS] Finish date: "`date`
+echo ""
 
 # If a build failure was encountered (but did not stop the building process), exit with an error
 if $build_successful; then

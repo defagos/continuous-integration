@@ -77,18 +77,23 @@ if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "2" ]; then
     "$SCRIPT_FILE_DIR/../continuous-integration.sh" -c -t "Second target"
 fi
 
-# Only one target. Exit on failure
+# Only one target, failure
 if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "3" ]; then
+    "$SCRIPT_FILE_DIR/../continuous-integration.sh" -t "Bundle"
+fi
+
+# Only one target. Exit on failure
+if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "4" ]; then
     "$SCRIPT_FILE_DIR/../continuous-integration.sh" -e -t "Bundle"
 fi
 
 # Two targets
-if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "4" ]; then
+if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "5" ]; then
     "$SCRIPT_FILE_DIR/../continuous-integration.sh" -t "Test Application,Bundle"
 fi
 
 # Missing target
-if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "5" ]; then
+if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "6" ]; then
     "$SCRIPT_FILE_DIR/../continuous-integration.sh" -t "Missing target"
 fi
 

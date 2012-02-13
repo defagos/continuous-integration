@@ -5,6 +5,9 @@ VERSION_NBR=1.0
 SCRIPT_NAME=`basename $0`
 EXECUTION_DIR=`pwd`
 
+param_clean_first=false
+param_exit_on_failure=false
+
 # User manual
 usage() {
     echo ""
@@ -27,7 +30,8 @@ usage() {
     echo "   -c:                    Perform a clean before each build"
     echo "   -e:                    Exit on failure"
     echo "   -h:                    Display this documentation"
-    echo "   -p:                    If several projects are available, use the -p to select"
+    echo "   -p:                    If several projects are available, use the -p parameter to"
+    echo "                          select the one to build"
     echo "   -t:                    Comma-separated list of the targets to build"
     echo "   -v:                    Print the script version number"
     echo ""
@@ -37,10 +41,10 @@ usage() {
 while getopts cehp:t:v OPT; do
     case "$OPT" in
         c)
-            param_clean_first=true;
+            param_clean_first=true
             ;;
         e)
-            param_exit_on_failure=true;
+            param_exit_on_failure=true
             ;;
         h)
             usage
@@ -156,6 +160,10 @@ echo "**************************************************************************
 echo "Continuous integration for $JOB_NAME, build $BUILD_NUMBER ($BUILD_ID)"
 echo "**************************************************************************************************************************************************"
 echo ""
+echo ""
+echo ""
+
+build_successful=true
 
 # Build all configurations for all targets to consider
 for configuration in "${configurations_arr[@]}"; do
@@ -172,7 +180,7 @@ for configuration in "${configurations_arr[@]}"; do
     echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
     echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_simulator_sdk}.log"
     log_file_path="$build_dir/build_${configuration_name}_${configuration_simulator_sdk}.log"
-    if [ ! -z "$param_clean_first" ]; then
+    if $param_clean_first; then
         xcodebuild clean build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
     fi
     xcodebuild build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" \
@@ -181,11 +189,13 @@ for configuration in "${configurations_arr[@]}"; do
         echo "[STATUS] Build failed (log excerpt follows)"
         echo ""
         tail -n 20 "$log_file_path"
-        if [ ! -z "$param_exit_on_failure" ]; then
+        if $param_exit_on_failure; then
             exit 1
         fi
+        build_successful=false
     else
         echo "[STATUS] Build succeeded"
+        echo ""
     fi
     echo ""
     
@@ -194,7 +204,7 @@ for configuration in "${configurations_arr[@]}"; do
     echo "--------------------------------------------------------------------------------------------------------------------------------------------------"
     echo "The full log is available under ${JOB_URL}ws/buildlogs/$BUILD_NUMBER/build_${configuration_name}_${configuration_sdk}.log"
     log_file_path="$build_dir/build_${configuration_name}_${configuration_sdk}.log"
-    if [ ! -z "$param_clean_first" ]; then
+    if $param_clean_first; then
         xcodebuild clean -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
     fi
     xcodebuild clean build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name" -sdk "$configuration_sdk" \
@@ -203,14 +213,23 @@ for configuration in "${configurations_arr[@]}"; do
         echo "[STATUS] Build failed (log excerpt follows)"
         echo ""
         tail -n 20 "$log_file_path"
-        if [ ! -z "$param_exit_on_failure" ]; then
+        if $param_exit_on_failure; then
             exit 1
         fi
+        build_successful=false
     else
         echo "[STATUS] Build succeeded"
+        echo ""
     fi
     echo ""
 done
 
-echo "[STATUS] End of continuous integration"
-
+# If a build failure was encountered (but did not stop the building process), exit with an error
+if $build_successful; then
+    echo "[STATUS] End of continuous integration; no build errors were encountered"
+    echo ""
+else 
+    echo "[STATUS] End of continuous integration; a build error was encountered"
+    echo ""
+    exit 1
+fi

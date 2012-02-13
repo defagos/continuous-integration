@@ -14,7 +14,7 @@ usage() {
     echo "receive a mail with a log excerpt, as well as links to the full compilation logs."
     echo "Optional parameters let you select only some project (if only one project exists"
     echo "in the directory where the script is run, this parameter can be omitted, otherwise"
-    echo "it is mandatory) or some specific target (if you do not need to build all of them)"
+    echo "it is mandatory) or some specific targets (if you do not need to build all of them)"
     echo ""
     echo "To be used, this script requires two environment variables to be set:"
     echo "  CODE_SIGN_IDENTITY: The identity to use for code signing (he name of the keychain "
@@ -28,8 +28,7 @@ usage() {
     echo "   -e:                    Exit on failure"
     echo "   -h:                    Display this documentation"
     echo "   -p:                    If several projects are available, use the -p to select"
-    echo "   -t:                    An optional target to build. If omitted, all targets are"
-    echo "                          built"
+    echo "   -t:                    Comma-separated list of the targets to build"
     echo "   -v:                    Print the script version number"
     echo ""
 }
@@ -51,7 +50,7 @@ while getopts cehp:t:v OPT; do
             param_project_name="$OPTARG"
             ;;
         t) 
-            param_target_name="$OPTARG"
+            param_target_names="$OPTARG"
             ;;
         v)
             echo "$SCRIPT_NAME version $VERSION_NBR"
@@ -132,15 +131,23 @@ fi
 build_dir="$buildlogs_dir/$BUILD_NUMBER"
 
 # Find all configurations to consider
-if [ ! -z "$param_target_name" ]; then
-    configurations=`xcodeproj-info -p "$project_name" -t "$param_target_name" list-configurations`
-    if [ "$?" -ne "0" ]; then
-        echo "[ERROR] The target $param_target_name does not exist"
-        echo ""
-        exit 1
-    fi
+if [ ! -z "$param_target_names" ]; then
+    # Tokenize input parameter (set the delimiter as temporary IFS)
+    IFS=$',' read -ra param_target_name_arr <<< "$param_target_names"
+    
+    # Collect all configurations defined for each target
+    for param_target_name in "${param_target_name_arr[@]}"; do
+        # Use \n to delimit array elements, not simply the default whitespaces (since lines most probably contain whitespaces; we do not want
+        # to break in the middle of them)
+        IFS=$'\n' configurations_arr+=(`xcodeproj-info -p "$project_name" -t "$param_target_name" list-configurations`)
+        if [ "$?" -ne "0" ]; then
+            echo "[ERROR] The target $param_target_name does not exist"
+            echo ""
+            exit 1
+        fi
+    done
 else
-    configurations=`xcodeproj-info -p "$project_name" list-configurations`
+    configurations_arr=(`xcodeproj-info -p "$project_name" list-configurations`)
 fi
 
 echo ""
@@ -150,7 +157,7 @@ echo "**************************************************************************
 echo ""
 
 # Build all configurations for all targets to consider
-echo "$configurations" | while read configuration; do
+for configuration in "${configurations_arr[@]}"; do
     # Extract build settings
     target_name=`echo "$configuration" | cut -f 1`
     configuration_name=`echo "$configuration" | cut -f 2`

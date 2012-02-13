@@ -62,53 +62,34 @@ fi
 # Run the test(s). If no -t parameter, run them all
 pushd "$WORKSPACE" > /dev/null
 
+# All targets
 if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "0" ]; then
     "$SCRIPT_FILE_DIR/../continuous-integration.sh"
 fi
 
+# Only one target
 if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "1" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
+    "$SCRIPT_FILE_DIR/../continuous-integration.sh" -t "Second target"
 fi
 
+# Only one target. Clean first
 if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "2" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
+    "$SCRIPT_FILE_DIR/../continuous-integration.sh" -c -t "Second target"
 fi
 
+# Only one target. Exit on failure
 if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "3" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
+    "$SCRIPT_FILE_DIR/../continuous-integration.sh" -e -t "Bundle"
 fi
 
+# Two targets
 if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "4" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
+    "$SCRIPT_FILE_DIR/../continuous-integration.sh" -t "Test Application,Bundle"
 fi
 
+# Missing target
 if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "5" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
-fi
-
-if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "6" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
-fi
-
-if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "7" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
-fi
-
-if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "8" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
-fi
-
-if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "9" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
-fi
-
-if [ -z "$param_test_id" ] || [ "$param_test_id" -eq "10" ]; then
-    "$SCRIPT_FILE_DIR/../continuous-integration.sh"
-fi
-
-if [ ! -z "$param_test_id" ]; then
-    echo "[ERROR] Unknown test id"
-    echo ""
+    "$SCRIPT_FILE_DIR/../continuous-integration.sh" -t "Missing target"
 fi
 
 popd > /dev/null

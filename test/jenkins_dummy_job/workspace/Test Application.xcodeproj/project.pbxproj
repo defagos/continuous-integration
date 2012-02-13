@@ -11,14 +11,8 @@
 		6FB4507514E67CBA00C68F04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB4507414E67CBA00C68F04 /* Foundation.framework */; };
 		6FB4507714E67CBA00C68F04 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB4507614E67CBA00C68F04 /* CoreGraphics.framework */; };
 		6FB4507914E67CBA00C68F04 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB4507814E67CBA00C68F04 /* CoreData.framework */; };
-		6FB4507F14E67CBA00C68F04 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6FB4507D14E67CBA00C68F04 /* InfoPlist.strings */; };
-		6FB4508114E67CBA00C68F04 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FB4508014E67CBA00C68F04 /* main.m */; };
-		6FB4508514E67CBA00C68F04 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FB4508414E67CBA00C68F04 /* AppDelegate.m */; };
-		6FB4508814E67CBA00C68F04 /* Test_Application.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6FB4508614E67CBA00C68F04 /* Test_Application.xcdatamodeld */; };
 		6FB4509314E67CCA00C68F04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB4507414E67CBA00C68F04 /* Foundation.framework */; };
-		6FB4509914E67CCB00C68F04 /* Second_target.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FB4509814E67CCB00C68F04 /* Second_target.m */; };
 		6FB450A314E67CD800C68F04 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB450A214E67CD800C68F04 /* CoreFoundation.framework */; };
-		6FB450A914E67CD800C68F04 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6FB450A714E67CD800C68F04 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,22 +21,9 @@
 		6FB4507414E67CBA00C68F04 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6FB4507614E67CBA00C68F04 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		6FB4507814E67CBA00C68F04 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		6FB4507C14E67CBA00C68F04 /* Test Application-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Test Application-Info.plist"; sourceTree = "<group>"; };
-		6FB4507E14E67CBA00C68F04 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6FB4508014E67CBA00C68F04 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		6FB4508214E67CBA00C68F04 /* Test Application-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Test Application-Prefix.pch"; sourceTree = "<group>"; };
-		6FB4508314E67CBA00C68F04 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		6FB4508414E67CBA00C68F04 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		6FB4508714E67CBA00C68F04 /* Test_Application.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Test_Application.xcdatamodel; sourceTree = "<group>"; };
 		6FB4509214E67CCA00C68F04 /* libSecond target.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libSecond target.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FB4509614E67CCA00C68F04 /* Second target-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Second target-Prefix.pch"; sourceTree = "<group>"; };
-		6FB4509714E67CCB00C68F04 /* Second_target.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Second_target.h; sourceTree = "<group>"; };
-		6FB4509814E67CCB00C68F04 /* Second_target.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Second_target.m; sourceTree = "<group>"; };
 		6FB450A114E67CD800C68F04 /* Bundle.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Bundle.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB450A214E67CD800C68F04 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		6FB450A614E67CD800C68F04 /* Bundle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bundle-Info.plist"; sourceTree = "<group>"; };
-		6FB450A814E67CD800C68F04 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6FB450AA14E67CD800C68F04 /* Bundle-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bundle-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,9 +60,6 @@
 		6FB4506314E67CBA00C68F04 = {
 			isa = PBXGroup;
 			children = (
-				6FB4507A14E67CBA00C68F04 /* Test Application */,
-				6FB4509414E67CCA00C68F04 /* Second target */,
-				6FB450A414E67CD800C68F04 /* Bundle */,
 				6FB4507114E67CBA00C68F04 /* Frameworks */,
 				6FB4506F14E67CBA00C68F04 /* Products */,
 			);
@@ -107,64 +85,6 @@
 				6FB450A214E67CD800C68F04 /* CoreFoundation.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		6FB4507A14E67CBA00C68F04 /* Test Application */ = {
-			isa = PBXGroup;
-			children = (
-				6FB4508314E67CBA00C68F04 /* AppDelegate.h */,
-				6FB4508414E67CBA00C68F04 /* AppDelegate.m */,
-				6FB4508614E67CBA00C68F04 /* Test_Application.xcdatamodeld */,
-				6FB4507B14E67CBA00C68F04 /* Supporting Files */,
-			);
-			path = "Test Application";
-			sourceTree = "<group>";
-		};
-		6FB4507B14E67CBA00C68F04 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				6FB4507C14E67CBA00C68F04 /* Test Application-Info.plist */,
-				6FB4507D14E67CBA00C68F04 /* InfoPlist.strings */,
-				6FB4508014E67CBA00C68F04 /* main.m */,
-				6FB4508214E67CBA00C68F04 /* Test Application-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		6FB4509414E67CCA00C68F04 /* Second target */ = {
-			isa = PBXGroup;
-			children = (
-				6FB4509714E67CCB00C68F04 /* Second_target.h */,
-				6FB4509814E67CCB00C68F04 /* Second_target.m */,
-				6FB4509514E67CCA00C68F04 /* Supporting Files */,
-			);
-			path = "Second target";
-			sourceTree = "<group>";
-		};
-		6FB4509514E67CCA00C68F04 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				6FB4509614E67CCA00C68F04 /* Second target-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		6FB450A414E67CD800C68F04 /* Bundle */ = {
-			isa = PBXGroup;
-			children = (
-				6FB450A514E67CD800C68F04 /* Supporting Files */,
-			);
-			path = Bundle;
-			sourceTree = "<group>";
-		};
-		6FB450A514E67CD800C68F04 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				6FB450A614E67CD800C68F04 /* Bundle-Info.plist */,
-				6FB450A714E67CD800C68F04 /* InfoPlist.strings */,
-				6FB450AA14E67CD800C68F04 /* Bundle-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -263,7 +183,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FB4507F14E67CBA00C68F04 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,7 +190,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FB450A914E67CD800C68F04 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,9 +200,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FB4508114E67CBA00C68F04 /* main.m in Sources */,
-				6FB4508514E67CBA00C68F04 /* AppDelegate.m in Sources */,
-				6FB4508814E67CBA00C68F04 /* Test_Application.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,7 +207,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FB4509914E67CCB00C68F04 /* Second_target.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,25 +218,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		6FB4507D14E67CBA00C68F04 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6FB4507E14E67CBA00C68F04 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		6FB450A714E67CD800C68F04 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6FB450A814E67CD800C68F04 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		6FB4508914E67CBA00C68F04 /* Debug */ = {
@@ -539,6 +434,7 @@
 				6FB4508D14E67CBA00C68F04 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6FB4509A14E67CCB00C68F04 /* Build configuration list for PBXNativeTarget "Second target" */ = {
 			isa = XCConfigurationList;
@@ -548,6 +444,7 @@
 				6FB4509C14E67CCB00C68F04 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6FB450AB14E67CD800C68F04 /* Build configuration list for PBXNativeTarget "Bundle" */ = {
 			isa = XCConfigurationList;
@@ -557,21 +454,9 @@
 				6FB450AD14E67CD800C68F04 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		6FB4508614E67CBA00C68F04 /* Test_Application.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				6FB4508714E67CBA00C68F04 /* Test_Application.xcdatamodel */,
-			);
-			currentVersion = 6FB4508714E67CBA00C68F04 /* Test_Application.xcdatamodel */;
-			path = Test_Application.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 6FB4506514E67CBA00C68F04 /* Project object */;
 }

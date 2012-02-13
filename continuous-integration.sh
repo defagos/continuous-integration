@@ -147,7 +147,8 @@ if [ ! -z "$param_target_names" ]; then
         fi
     done
 else
-    configurations_arr=(`xcodeproj-info -p "$project_name" list-configurations`)
+    # See comment above
+    IFS=$'\n' configurations_arr=(`xcodeproj-info -p "$project_name" list-configurations`)
 fi
 
 echo ""
@@ -210,10 +211,6 @@ for configuration in "${configurations_arr[@]}"; do
     fi
     echo ""
 done
-
-# TODO: Create ipa
-# See http://stackoverflow.com/questions/2664885/xcode-build-and-archive-from-command-line
-# /usr/bin/xcrun -sdk iphoneos PackageApplication -v "${RELEASE_BUILDDIR}/${APPLICATION_NAME}.app" -o "${BUILD_HISTORY_DIR}/${APPLICATION_NAME}.ipa" --sign "${DEVELOPER_NAME}" --embed "${PROVISONING_PROFILE}"
 
 echo "[STATUS] End of continuous integration"
 

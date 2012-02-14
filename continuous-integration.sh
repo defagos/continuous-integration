@@ -125,13 +125,16 @@ else
     project_name="$param_project_name"
 fi
 
-# Create a symbolic link from the workspace (which we can access using a URL) and the builds directory. This is where we will store our build logs
+# Create a symbolic link from the workspace (which we can access using a URL) to the builds directory. This is where we will store our build logs
 # (this way, we can save them for each build number, and the files get deleted when a build is removed). If we had stored logs in the workspace 
-# directly, we would have lost them when the workspace is cleaned up). 
+# directly, we would have lost them when the workspace is cleaned up). The link is created each time a build is run. This avoids dangling symbolic
+# links if the workspace gets renamed
 buildlogs_dir="$WORKSPACE/buildlogs"
-if [ ! -e "$buildlogs_dir" ]; then
-    ln -s "$WORKSPACE/../builds/" "$buildlogs_dir" &> /dev/null
+if [ -h "$buildlogs_dir" ]; then
+    rm "$buildlogs_dir"
 fi
+ln -s "$WORKSPACE/../builds/" "$buildlogs_dir" &> /dev/null
+
 build_dir="$buildlogs_dir/$BUILD_NUMBER"
 
 # Find all configurations to consider

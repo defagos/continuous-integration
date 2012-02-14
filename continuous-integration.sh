@@ -185,7 +185,7 @@ for configuration in "${configurations_arr[@]}"; do
         xcodebuild clean build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name"
     fi
     xcodebuild build -project "$project_name.xcodeproj" -target "$target_name" -configuration "$configuration_name" -sdk "$configuration_simulator_sdk" \
-        RUN_CLANG_STATIC_ANALYZER="true" &> "$log_file_path"
+        ARCHS=i386 RUN_CLANG_STATIC_ANALYZER="true" &> "$log_file_path"
     if [ "$?" -ne "0" ]; then
         echo "[STATUS] Build failed (log excerpt follows)"
         echo ""

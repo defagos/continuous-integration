@@ -34,20 +34,20 @@ applications:
     - name: Fart app
       repository_url: https://svn.company.com/repositories/FartApp
       stores:
-          - name: Main local store
-            identity: jsmith
-          - name: Auxiliary local store
-            identity: jsmith
-          - name: Nightly store
-            identity: jsmith
-          - name: Adrian store
-            identity: asmith
+          - store_name: Main local store
+            identity_name: jsmith
+          - store_name: Auxiliary local store
+            identity_name: jsmith
+          - store_name: Nightly store
+            identity_name: jsmith
+          - store_name: Adrian store
+            identity_name: asmith
             
     - name: Talking bird app
       repository_url: git@git.company.com:talking_bird_app/talking_bird_app.git
       stores:
-          - name: Main local store
-            identity: jsmith
-          - name: Nightly store
-            identity: jsmith
+          - store_name: Main local store
+            identity_name: jsmith
+          - store_name: Nightly store
+            identity_name: jsmith
 ...

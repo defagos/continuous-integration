@@ -5,9 +5,10 @@ require 'yaml'
 
 class ConfigurationFile
   def initialize(fileName)
+    # Parse YAML configuration file
     fileContents = YAML.load_file(fileName)
-    # TODO: Check errors (syntax, file existence, etc.)
     
+    # Extract configuration data
     fileContents['identities'].each { | identityData |
       identity = Identity.new(identityData)
     }

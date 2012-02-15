@@ -11,29 +11,29 @@ identities:
 stores:
     - name: Main local store
       url: file:///stores/ipa1
-      content:
+      contents:
           - All
       
     - name: Auxiliary local store
       url: file:///stores/ipa2
-      content:
+      contents:
           - Latest
           - Nightly
       
     - name: Nightly store
       url: ftp://login:password@ftp.company.com/path/to/nightly/store
-      content:
+      contents:
           - Nightly
       
     - name: Adrian store
       url: ftp://login:password@ftp.adrian-smith.com/path/to/store
-      content:
+      contents:
           - Latest
       
 applications:
     - name: Fart app
       repository_url: https://svn.company.com/repositories/FartApp
-      stores:
+      targets:
           - store_name: Main local store
             identity_name: jsmith
           - store_name: Auxiliary local store
@@ -45,7 +45,7 @@ applications:
             
     - name: Talking bird app
       repository_url: git@git.company.com:talking_bird_app/talking_bird_app.git
-      stores:
+      targets:
           - store_name: Main local store
             identity_name: jsmith
           - store_name: Nightly store

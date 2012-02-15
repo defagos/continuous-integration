@@ -4,43 +4,53 @@ require 'store'
 require 'yaml'
 
 class ConfigurationFile
-  # Constructor
+  attr_accessor :identities
+  attr_accessor :stores
+  attr_accessor :applications
+  
   def initialize(fileName)
-    # Parse YAML configuration file
     fileContents = YAML.load_file(fileName)
     
-    # Extract configuration data
-    @identities = {}
+    @identitiesMap = {}
     fileContents['identities'].each { | identityData |
-      identity = Identity.new(identityData)
-      @identities[identity.name] = identity
+      identity = Identity.new(identityData, self)
+      @identitiesMap[identity.name] = identity
     }
     
-    @stores = {}
+    @storesMap = {}
     fileContents['stores'].each { | storeData |
-      store = Store.new(storeData)
-      @stores[store.name] = store
+      store = Store.new(storeData, self)
+      @storesMap[store.name] = store
     }
     
-    @applications = {}
+    @applicationsMap = {}
     fileContents['applications'].each { | applicationData |
-      application = Application.new(applicationData)
-      @applications[application.name] = application
+      application = Application.new(applicationData, self)
+      @applicationsMap[application.name] = application
     }
   end
   
-  # Return the identity matching a given name
+  def identities
+    return @identitiesMap.values
+  end
+  
   def identity(name)
-    return @identities[name]
+    return @identitiesMap[name]
   end
   
-  # Return the store matching a given name
+  def stores
+    return @storesMap.values
+  end
+  
   def store(name)
-    return @stores[name]
+    return @storesMap[name]
   end
   
-  # Return the application matchin a given name
+  def applications
+    return @applicationsMap.values
+  end
+  
   def application(name)
-    return @applications[name]
+    return @applicationsMap[name]
   end
 end

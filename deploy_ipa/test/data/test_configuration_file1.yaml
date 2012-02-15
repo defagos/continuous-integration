@@ -1,0 +1,53 @@
+---
+identities:
+    - name: jsmith
+      provisioning_profile: XXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+      code_signing_identity: John Smith
+      
+    - name: asmith
+      provisioning_profile: YYYYYYY-YYYY-YYYY-YYYY-YYYYYYYYYYYY
+      code_signing_identity: Adrian Smith
+    
+stores:
+    - name: Main local store
+      url: file:///stores/ipa1
+      content:
+          - All
+      
+    - name: Auxiliary local store
+      url: file:///stores/ipa2
+      content:
+          - Latest
+          - Nightly
+      
+    - name: Nightly store
+      url: ftp://login:password@ftp.company.com/path/to/nightly/store
+      content:
+          - Nightly
+      
+    - name: Adrian store
+      url: ftp://login:password@ftp.adrian-smith.com/path/to/store
+      content:
+          - Latest
+      
+applications:
+    - name: Fart app
+      repository_url: https://svn.company.com/repositories/FartApp
+      stores:
+          - name: Main local store
+            identity: jsmith
+          - name: Auxiliary local store
+            identity: jsmith
+          - name: Nightly store
+            identity: jsmith
+          - name: Adrian store
+            identity: asmith
+            
+    - name: Talking bird app
+      repository_url: git@git.company.com:talking_bird_app/talking_bird_app.git
+      stores:
+          - name: Main local store
+            identity: jsmith
+          - name: Nightly store
+            identity: jsmith
+...

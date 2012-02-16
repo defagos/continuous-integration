@@ -1,7 +1,7 @@
 require 'application'
 require 'identity'
+require 'kwalify'
 require 'store'
-require 'yaml'
 
 class ConfigurationFile
   attr_accessor :identities
@@ -9,8 +9,21 @@ class ConfigurationFile
   attr_accessor :applications
   
   def initialize(fileName)
-    fileContents = YAML.load_file(fileName)
+    # Load YAML schema
+   schemaFile = Kwalify::Yaml.load_file('lib/deploy_ipa/schema.yaml')
+   validator = Kwalify::Validator.new(schemaFile)
     
+    # Load and validate YAML file
+    fileContents = Kwalify::Yaml.load_file(fileName)
+    errors = validator.validate(fileContents)
+    if errors && ! errors.empty?
+      for error in errors
+        puts("[#{error.path}] #{error.message}")
+      end
+      raise StandardError, 'The configuration file ' + fileName + ' contains errors'
+    end
+        
+    # Extract data
     @identitiesMap = {}
     fileContents['identities'].each { | identityData |
       identity = Identity.new(identityData, self)

@@ -1,0 +1,36 @@
+type: map
+mapping:
+    "identities": 
+        type: seq
+        sequence:
+            - type: map
+              mapping:
+                  "name": { type: str, required: yes, unique: yes }
+                  "provisioning_profile": { type: str, required: yes }
+                  "code_signing_identity": { type: str, required: yes }
+    "stores":
+        type: seq
+        sequence:
+            - type: map
+              mapping:
+                  "name": { type: str, required: yes, unique: yes }
+                  "url": { type: str, required: yes }
+                  "contents":
+                      type: seq
+                      sequence:
+                          - type: str
+    "applications":
+        type: seq
+        sequence:
+            - type: map
+              mapping:
+                  "name": { type: str, required: yes, unique: yes }
+                  "repository_url": { type: str, required: yes, unique: yes }
+                  "targets":
+                      type: seq
+                      sequence:
+                          - type: map
+                            mapping:
+                                "store_name": { type: str, required: yes, unique: yes }
+                                "identity_name": { type: str, required: yes }
+                  

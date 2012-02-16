@@ -2,4 +2,4 @@
 
 require 'deploy_ipa'
 
-DeployIpa.main
+DeployIpa.run

@@ -8,35 +8,35 @@ class DeployIpa
     options = {}
     
     # Setup command line parser
-    optionParser = OptionParser.new { |parser|
+    option_parser = OptionParser.new { |parser|
       parser.banner = 'Usage: deploy_ipa [options] configuration_file.yaml'
       parser.version = Gem.loaded_specs["deploy_ipa"].version.to_s
       
       # Application list
-      applicationNames = []
-      parser.on('-a', '--applications LIST', Array, 'A comma-separated list of the applications to deploy (all if omitted)') { |applicationNames|
-        options[:applicationNames] = applicationNames
+      application_names = []
+      parser.on('-a', '--applications LIST', Array, 'A comma-separated list of the applications to deploy (all if omitted)') { |application_names|
+        options[:application_names] = application_names
       }
       
       # Identity list
-      identityNames = []
-      parser.on('-i', '--identities LIST', Array, 'A comma-separated list of the identities to deploy applications for (all if omitted)') { |identityNames|
-        options[:identityNames] = identityNames
+      identity_names = []
+      parser.on('-i', '--identities LIST', Array, 'A comma-separated list of the identities to deploy applications for (all if omitted)') { |identity_names|
+        options[:identity_names] = identity_names
       }
       
       # Store list
-      storeNames = []
-      parser.on('-s', '--stores LIST', Array, 'A comma-separated list of the stores to deploy applications to (all if omitted)') { |storeNames|
-        options[:storeNames] = storeNames
+      store_names = []
+      parser.on('-s', '--stores LIST', Array, 'A comma-separated list of the stores to deploy applications to (all if omitted)') { |store_names|
+        options[:store_names] = store_names
       }
     }
     
     # Parse the command line destructively
     success = true
     begin
-      optionParser.parse!(ARGV)
-    rescue OptionParser::InvalidOption => invalidOptionError
-      puts(invalidOptionError.message)
+      option_parser.parse!(ARGV)
+    rescue OptionParser::InvalidOption => invalid_option_error
+      puts(invalid_option_error.message)
       success = false
     end
     
@@ -52,57 +52,61 @@ class DeployIpa
     # Print help if the command line is incorrect
     if ! success
       puts
-      puts(optionParser.help)
+      puts(option_parser.help)
       return
     end
     
     # Load the configuration file
     begin
-      configurationFile = ConfigurationFile.new(ARGV[0])
+      configuration_file = ConfigurationFile.new(ARGV[0])
     rescue Exception => error
       puts(error.message)
     end
     
     # Check parameters
-    options[:applicationNames].each { |applicationName|
-      if configurationFile.applicationNames.index(applicationName).nil?
-        puts('Warning: The application ' + applicationName + ' has not been defined in the configuration file. Ignored')
+    options[:application_names].each { |application_name|
+      if configuration_file.application_names.index(application_name).nil?
+        puts('Warning: The application ' + application_name + ' has not been defined in the configuration file. Ignored')
       end
     }
-    options[:storeNames].each { |storeName|
-     if configurationFile.storeNames.index(storeName).nil?
-        puts('Warning: The store ' + storeName + ' has not been defined in the configuration file. Ignored')
+    options[:store_names].each { |store_name|
+     if configuration_file.store_names.index(store_name).nil?
+        puts('Warning: The store ' + store_name + ' has not been defined in the configuration file. Ignored')
       end
     }
-    options[:identityNames].each { |identityName|
-      if configurationFile.identityNames.index(identityName).nil?
-        puts('Warning: The identity ' + identityName + ' has not been defined in the configuration file. Ignored')
+    options[:identity_names].each { |identity_name|
+      if configuration_file.identity_names.index(identity_name).nil?
+        puts('Warning: The identity ' + identity_name + ' has not been defined in the configuration file. Ignored')
       end
     }
     
     # Collect all deployment configurations which match the input arguments
-    deploymentInfos = []
-    configurationFile.applications.each { |application|
-      applicationNames = options[:applicationNames]
-      if ! applicationNames.nil? && applicationNames.index(application.name).nil?
+    deployment_infos = []
+    configuration_file.applications.each { |application|
+      application_names = options[:application_names]
+      if ! application_names.nil? && application_names.index(application.name).nil?
         next
       end
       
       application.targets.each { |target|
-        storeNames = options[:storeNames]
-        if ! storeNames.nil? && storeNames.index(target.storeName).nil?
+        store_names = options[:store_names]
+        if ! store_names.nil? && store_names.index(target.store_name).nil?
           next
         end
 
-        identityNames = options[:identityNames]
-        if ! identityNames.nil? && identityNames.index(target.identityName).nil?
+        identity_names = options[:identity_names]
+        if ! identity_names.nil? && identity_names.index(target.identity_name).nil?
           next
         end
         
-        deploymentInfos << DeploymentInfo.new(application.name, target.storeName, target.identityName)
+        deployment_infos << DeploymentInfo.new(application.name, target.store_name, target.identity_name)
       }
     }
     
-    puts deploymentInfos
+    puts deployment_infos
+  end
+  
+  def self.parse_command_line_arguments
+    
   end
 end

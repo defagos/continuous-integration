@@ -1,11 +1,11 @@
 class DeploymentInfo
-  attr_accessor :applicationName
-  attr_accessor :storeName
-  attr_accessor :identityName
+  attr_accessor :application_name
+  attr_accessor :store_name
+  attr_accessor :identity_name
   
-  def initialize(applicationName, storeName, identityName)
-    @applicationName = applicationName
-    @storeName = storeName
-    @identityName = identityName
+  def initialize(application_name, store_name, identity_name)
+    @application_name = application_name
+    @store_name = store_name
+    @identity_name = identity_name
   end
 end

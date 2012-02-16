@@ -1,37 +1,37 @@
 class Application
   attr_accessor :name
-  attr_accessor :repositoryURL
+  attr_accessor :repository_url
   attr_accessor :targets
   
   class Target
-    attr_accessor :storeName
-    attr_accessor :identityName
+    attr_accessor :store_name
+    attr_accessor :identity_name
 
-    def initialize(data, configurationFile)
-      @storeName = data['store_name']
-      @identityName = data['identity_name']
-      @configurationFile = configurationFile
+    def initialize(data, configuration_file)
+      @store_name = data['store_name']
+      @identity_name = data['identity_name']
+      @configuration_file = configuration_file
     end
 
     def store
-      return @configurationFile.store(@storeName)
+      return @configuration_file.store(@store_name)
     end
 
     def identity
-      return @configurationFile.identity(@identityName)
+      return @configuration_file.identity(@identity_name)
     end
   end
   
-  def initialize(data, configurationFile)
+  def initialize(data, configuration_file)
     @name = data['name']
-    @repositoryURL = data['repository_url']
+    @repository_url = data['repository_url']
     
     @targets = []
-    data['targets'].each { |targetData|
-      target = Target.new(targetData, configurationFile)
+    data['targets'].each { |target_data|
+      target = Target.new(target_data, configuration_file)
       @targets << target
     }
     
-    @configurationFile = configurationFile
+    @configuration_file = configuration_file
   end
 end

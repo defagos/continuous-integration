@@ -2,13 +2,13 @@ require 'deploy_ipa/configuration_file'
 
 class Identity
   attr_accessor :name
-  attr_accessor :provisioningProfile
-  attr_accessor :codeSigningIdentity
+  attr_accessor :provisioning_profile
+  attr_accessor :code_signing_identity
   
-  def initialize(data, configurationFile)
+  def initialize(data, configuration_file)
     @name = data['name']
-    @provisioningProfile = data['provisioning_profile']
-    @codeSigningIdentity = data['code_signing_identity']
-    @configurationFile = configurationFile
+    @provisioning_profile = data['provisioning_profile']
+    @code_signing_identity = data['code_signing_identity']
+    @configuration_file = configuration_file
   end
 end

@@ -8,74 +8,74 @@ class ConfigurationFile
   attr_accessor :stores
   attr_accessor :applications
   
-  def initialize(fileName)
+  def initialize(file_name)
     # Load YAML schema
-   schemaFile = Kwalify::Yaml.load_file('lib/deploy_ipa/configuration_file_schema.yaml')
-   validator = Kwalify::Validator.new(schemaFile)
+   schema_file = Kwalify::Yaml.load_file('lib/deploy_ipa/configuration_file_schema.yaml')
+   validator = Kwalify::Validator.new(schema_file)
     
     # Load and validate YAML file
-    fileContents = Kwalify::Yaml.load_file(fileName)
-    errors = validator.validate(fileContents)
+    file_contents = Kwalify::Yaml.load_file(file_name)
+    errors = validator.validate(file_contents)
     if errors && ! errors.empty?
       for error in errors
         puts("[#{error.path}] #{error.message}")
       end
-      raise StandardError, 'The configuration file ' + fileName + ' contains errors'
+      raise StandardError, 'The configuration file ' + file_name + ' contains errors'
     end
         
     # Extract data
-    @identitiesMap = {}
-    fileContents['identities'].each { |identityData|
-      identity = Identity.new(identityData, self)
-      @identitiesMap[identity.name] = identity
+    @identities_map = {}
+    file_contents['identities'].each { |identity_data|
+      identity = Identity.new(identity_data, self)
+      @identities_map[identity.name] = identity
     }
     
-    @storesMap = {}
-    fileContents['stores'].each { |storeData|
-      store = Store.new(storeData, self)
-      @storesMap[store.name] = store
+    @stores_map = {}
+    file_contents['stores'].each { |store_data|
+      store = Store.new(store_data, self)
+      @stores_map[store.name] = store
     }
     
-    @applicationsMap = {}
-    fileContents['applications'].each { |applicationData|
-      application = Application.new(applicationData, self)
-      @applicationsMap[application.name] = application
+    @applications_map = {}
+    file_contents['applications'].each { |application_data|
+      application = Application.new(application_data, self)
+      @applications_map[application.name] = application
     }
   end
   
-  def identityNames
-    return @identitiesMap.keys
+  def identity_names
+    return @identities_map.keys
   end
   
   def identities
-    return @identitiesMap.values
+    return @identities_map.values
   end
   
   def identity(name)
-    return @identitiesMap[name]
+    return @identities_map[name]
   end
   
-  def storeNames
-    return @storesMap.keys
+  def store_names
+    return @stores_map.keys
   end
   
   def stores
-    return @storesMap.values
+    return @stores_map.values
   end
   
   def store(name)
-    return @storesMap[name]
+    return @stores_map[name]
   end
   
   def applications
-    return @applicationsMap.values
+    return @applications_map.values
   end
   
-  def applicationNames
-    return @applicationsMap.keys
+  def application_names
+    return @applications_map.keys
   end
   
   def application(name)
-    return @applicationsMap[name]
+    return @applications_map[name]
   end
 end

@@ -5,10 +5,10 @@ class Store
   attr_accessor :url
   attr_accessor :contents
   
-  def initialize(data, configurationFile)
+  def initialize(data, configuration_file)
     @name = data['name']
     @url = data['url']
     @contents = data['contents']
-    @configurationFile = configurationFile
+    @configuration_file = configuration_file
   end
 end

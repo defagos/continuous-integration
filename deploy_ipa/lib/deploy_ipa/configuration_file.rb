@@ -43,12 +43,20 @@ class ConfigurationFile
     }
   end
   
+  def identityNames
+    return @identitiesMap.keys
+  end
+  
   def identities
     return @identitiesMap.values
   end
   
   def identity(name)
     return @identitiesMap[name]
+  end
+  
+  def storeNames
+    return @storesMap.keys
   end
   
   def stores
@@ -61,6 +69,10 @@ class ConfigurationFile
   
   def applications
     return @applicationsMap.values
+  end
+  
+  def applicationNames
+    return @applicationsMap.keys
   end
   
   def application(name)

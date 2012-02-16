@@ -1,3 +1,5 @@
+require 'deploy_ipa/application'
+require 'deploy_ipa/deployment_info'
 require 'deploy_ipa/configuration_file'
 require 'optparse'
 
@@ -54,8 +56,53 @@ class DeployIpa
       return
     end
     
-    ARGV.each { |arg|
-      puts arg
+    # Load the configuration file
+    begin
+      configurationFile = ConfigurationFile.new(ARGV[0])
+    rescue Exception => error
+      puts(error.message)
+    end
+    
+    # Check parameters
+    options[:applicationNames].each { |applicationName|
+      if configurationFile.applicationNames.index(applicationName).nil?
+        puts('Warning: The application ' + applicationName + ' has not been defined in the configuration file. Ignored')
+      end
     }
+    options[:storeNames].each { |storeName|
+     if configurationFile.storeNames.index(storeName).nil?
+        puts('Warning: The store ' + storeName + ' has not been defined in the configuration file. Ignored')
+      end
+    }
+    options[:identityNames].each { |identityName|
+      if configurationFile.identityNames.index(identityName).nil?
+        puts('Warning: The identity ' + identityName + ' has not been defined in the configuration file. Ignored')
+      end
+    }
+    
+    # Collect all deployment configurations which match the input arguments
+    deploymentInfos = []
+    configurationFile.applications.each { |application|
+      applicationNames = options[:applicationNames]
+      if ! applicationNames.nil? && applicationNames.index(application.name).nil?
+        next
+      end
+      
+      application.targets.each { |target|
+        storeNames = options[:storeNames]
+        if ! storeNames.nil? && storeNames.index(target.storeName).nil?
+          next
+        end
+
+        identityNames = options[:identityNames]
+        if ! identityNames.nil? && identityNames.index(target.identityName).nil?
+          next
+        end
+        
+        deploymentInfos << DeploymentInfo.new(application.name, target.storeName, target.identityName)
+      }
+    }
+    
+    puts deploymentInfos
   end
 end

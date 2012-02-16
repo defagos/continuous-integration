@@ -10,8 +10,9 @@ class ConfigurationFile
   
   def initialize(file_name)
     # Load YAML schema
-   schema_file = Kwalify::Yaml.load_file('lib/deploy_ipa/configuration_file_schema.yaml')
-   validator = Kwalify::Validator.new(schema_file)
+    configuration_file_path = File.join(File.dirname(File.expand_path(__FILE__)), 'configuration_file_schema.yaml')
+    schema_file = Kwalify::Yaml.load_file(configuration_file_path)
+    validator = Kwalify::Validator.new(schema_file)
     
     # Load and validate YAML file
     file_contents = Kwalify::Yaml.load_file(file_name)

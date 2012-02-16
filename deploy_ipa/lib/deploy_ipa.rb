@@ -4,48 +4,58 @@ require 'optparse'
 class DeployIpa
   def self.run
     options = {}
-    OptionParser.new do |parser|
+    
+    # Setup command line parser
+    optionParser = OptionParser.new { |parser|
       parser.banner = 'Usage: deploy_ipa [options] configuration_file.yaml'
-      
-      # Version
-      parser.on('-v', '--version', 'Display the version information') do |enabled|
-        options[:version] = enabled
-      end
+      parser.version = Gem.loaded_specs["deploy_ipa"].version.to_s
       
       # Application list
       applicationNames = []
-      parser.on('-a', '--applications LIST', Array, 'A comma-separated list of the applications to deploy (all if omitted)') do |applicationNames|
+      parser.on('-a', '--applications LIST', Array, 'A comma-separated list of the applications to deploy (all if omitted)') { |applicationNames|
         options[:applicationNames] = applicationNames
-      end
+      }
       
       # Identity list
       identityNames = []
-      parser.on('-i', '--identities LIST', Array, 'A comma-separated list of the identities to deploy applications for (all if omitted)') do |identityNames|
+      parser.on('-i', '--identities LIST', Array, 'A comma-separated list of the identities to deploy applications for (all if omitted)') { |identityNames|
         options[:identityNames] = identityNames
-      end
+      }
       
       # Store list
       storeNames = []
-      parser.on('-s', '--stores LIST', Array, 'A comma-separated list of the stores to deploy applications to (all if omitted)') do |storeNames|
+      parser.on('-s', '--stores LIST', Array, 'A comma-separated list of the stores to deploy applications to (all if omitted)') { |storeNames|
         options[:storeNames] = storeNames
-      end
-    end.parse!
+      }
+    }
     
-    p ARGV
+    # Parse the command line destructively
+    success = true
+    begin
+      optionParser.parse!(ARGV)
+    rescue OptionParser::InvalidOption => invalidOptionError
+      puts(invalidOptionError.message)
+      success = false
+    end
     
+    # Process remaining arguments (only a YAML file is expected)
+    if ARGV.count == 0
+      puts('Missing YAML configuration file argument')
+      success = false
+    elsif ARGV.count > 1
+      puts('Too many arguments')
+      success = false
+    end
     
+    # Print help if the command line is incorrect
+    if ! success
+      puts
+      puts(optionParser.help)
+      return
+    end
     
-    # begin
-    #   configurationFile = ConfigurationFile.new('test/data/test_configuration_file1.yaml')
-    #   
-    #   configurationFile.applications.each { |application|
-    #     puts(application.name)
-    #     application.targets.each { |target|
-    #       puts('  ' + target.store.name + ' -> ' + target.identity.name)
-    #     }
-    #   }
-    # rescue Exception => error
-    #   puts(error.message)
-    # end
+    ARGV.each { |arg|
+      puts arg
+    }
   end
 end

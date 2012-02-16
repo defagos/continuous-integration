@@ -1,7 +1,7 @@
-require 'application'
-require 'identity'
+require 'deploy_ipa/application'
+require 'deploy_ipa/identity'
+require 'deploy_ipa/store'
 require 'kwalify'
-require 'store'
 
 class ConfigurationFile
   attr_accessor :identities
@@ -10,7 +10,7 @@ class ConfigurationFile
   
   def initialize(fileName)
     # Load YAML schema
-   schemaFile = Kwalify::Yaml.load_file('lib/deploy_ipa/schema.yaml')
+   schemaFile = Kwalify::Yaml.load_file('lib/deploy_ipa/configuration_file_schema.yaml')
    validator = Kwalify::Validator.new(schemaFile)
     
     # Load and validate YAML file
@@ -25,19 +25,19 @@ class ConfigurationFile
         
     # Extract data
     @identitiesMap = {}
-    fileContents['identities'].each { | identityData |
+    fileContents['identities'].each { |identityData|
       identity = Identity.new(identityData, self)
       @identitiesMap[identity.name] = identity
     }
     
     @storesMap = {}
-    fileContents['stores'].each { | storeData |
+    fileContents['stores'].each { |storeData|
       store = Store.new(storeData, self)
       @storesMap[store.name] = store
     }
     
     @applicationsMap = {}
-    fileContents['applications'].each { | applicationData |
+    fileContents['applications'].each { |applicationData|
       application = Application.new(applicationData, self)
       @applicationsMap[application.name] = application
     }

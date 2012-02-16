@@ -1,4 +1,4 @@
-require 'configuration_file'
+require 'deploy_ipa/configuration_file'
 
 class Store
   attr_accessor :name

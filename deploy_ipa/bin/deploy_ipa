@@ -1,1 +1,5 @@
 #!/usr/bin/env ruby
+
+require 'deploy_ipa'
+
+DeployIpa.main

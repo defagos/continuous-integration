@@ -27,7 +27,7 @@ class Application
     @repositoryURL = data['repository_url']
     
     @targets = []
-    data['targets'].each { | targetData |
+    data['targets'].each { |targetData|
       target = Target.new(targetData, configurationFile)
       @targets << target
     }

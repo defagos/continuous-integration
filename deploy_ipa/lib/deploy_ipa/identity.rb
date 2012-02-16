@@ -1,4 +1,4 @@
-require 'configuration_file'
+require 'deploy_ipa/configuration_file'
 
 class Identity
   attr_accessor :name

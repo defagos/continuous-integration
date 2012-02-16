@@ -1,11 +1,14 @@
-Gem::Specification.new do |s|
-  s.name = 'deploy_ipa'
-  s.version = '1.0'
-  s.date = '2012-02-15'
-  s.summary = 'A tool to deploy signed iOS ipa packages'
-  s.description = 'This tool lets your sign and automatically deploy ipa packages to a set of remote or local locations'
-  s.authors = [ 'Samuel Défago' ]
-  s.email = 'defagos@gmail.com'
-  s.homepage = 'https://github.com/defagos'
-  s.executables << 'deploy_ipa'
+require 'rake'
+
+Gem::Specification.new do |spec|
+  spec.name = 'deploy_ipa'
+  spec.version = '1.0'
+  spec.date = '2012-02-15'
+  spec.summary = 'A tool to deploy signed iOS ipa packages'
+  spec.description = 'This tool lets your sign and automatically deploy ipa packages to a set of remote or local locations'
+  spec.authors = ['Samuel Défago']
+  spec.email = 'defagos@gmail.com'
+  spec.homepage = 'https://github.com/defagos'
+  spec.executables << 'deploy_ipa'
+  spec.files = FileList['bin/*', 'lib/**/*', 'test/**/*'].to_a
 end

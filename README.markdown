@@ -18,6 +18,10 @@ On your Jenkins continuous integration server, install the continuous-integratio
 * CODE_SIGN_IDENTITY: The code signing identity to use (certificate)
 * PROVISIONING_PROFILE: The identifier of the provisioning profile to use
 
+An optional environment variable can be set to unlock the user login keychain, if it's not unlock before running the script:
+
+* LOGIN_KEYCHAIN_PASSWORD: The password of the user login keychain, (usually the password of the user who run the script)
+
 Then configure your Jenkins jobs to call continuous-integration.sh from the worskpace directory where the projects to build are located. This is made by adding an "Execute shell" build step to each job configuration.
 
 Note that all device binaries are built using the same identity and provisioning profile. If you need to automatically deploy binaries using other code signing parameters, you can use my sign-ipa tool (https://github.com/defagos/sign-ipa) to re-sign the binaries without building them again.

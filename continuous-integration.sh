@@ -24,6 +24,10 @@ usage() {
     echo "                      certificate to use"
     echo "  PROVISIONING_PROFILE: The identifier of the provisioning profile to use"
     echo ""
+    echo "An optional environment variable can unlock the user login keychain:"
+    echo "  LOGIN_KEYCHAIN_PASSWORD: The password of the user login keychain "
+    echo "							 (usually the password of the user who run the script)."
+    echo ""
     echo "Usage: $SCRIPT_NAME [-p project] [-t target] [-c] [-e] [-v] [-h]"
     echo ""
     echo "Options:"
@@ -78,6 +82,11 @@ if [ -z "$PROVISIONING_PROFILE" ]; then
     echo "[ERROR] The PROVISIONING_PROFILE environment variable must be set to the identififer of the provisioning profile to use"
     echo ""
     exit 1
+fi
+
+# Check optional environment variables
+if [ "$LOGIN_KEYCHAIN_PASSWORD" ]; then
+	security unlock-keychain -p "$LOGIN_KEYCHAIN_PASSWORD" "$HOME/Library/Keychains/login.keychain"
 fi
 
 # Check that the required tools are available
